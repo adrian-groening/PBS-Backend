@@ -4,7 +4,7 @@ package com.pbs.Entities;
 
 
 public class Product {
-    String productID, name, price, barcode, currency, category, brand, commissionRate, affiliate, webURL, affiliateWebURL, description, earningsPerClick, totalSalesVolume, imageURL;
+    String productID, name, price, barcode, currency, category, brand, commissionRate, affiliate, logoUri, webURL, affiliateWebURL, description, earningsPerClick, totalSalesVolume, imageURL;
     boolean couponsAvailable, topRated, isNew, isPriorityListing, onSale, onPromotion;
     public int points;
 
@@ -12,7 +12,7 @@ public class Product {
     public Product() {
     }
     public Product(String productID, String name, String price, String barcode, String currency, String imageURL, String category, String brand, String commissionRate,
-                   String affiliate, String webURL, String affiliateWebURL, String description, String earningsPerClick,
+                   String affiliate, String logoUri, String webURL, String affiliateWebURL, String description, String earningsPerClick,
                    String totalSalesVolume, boolean couponsAvailable, boolean topRated, boolean isNew, boolean isPriorityListing,
                    boolean onSale, boolean onPromotion) {
         this.productID= productID;
@@ -25,6 +25,7 @@ public class Product {
         this.brand = brand;
         this.commissionRate = commissionRate;
         this.affiliate = affiliate;
+        this.logoUri = logoUri;
         this.webURL = webURL;
         this.affiliateWebURL = affiliateWebURL;
         this.description = description;
@@ -109,6 +110,12 @@ public class Product {
     }
     public void setAffiliateWebURL(String affiliateWebURL) {
         this.affiliateWebURL = affiliateWebURL;
+    }
+    public String getLogoURI() {
+        return logoUri;
+    }
+    public void setLogoURI(String logoUri) {
+        this.logoUri = logoUri;
     }
     public String getDescription() {
         return description;

@@ -24,6 +24,7 @@ import com.google.gson.JsonParser;
 import com.pbs.Entities.Product;
 import com.pbs.app.ImpactSearch.ProductResults.Offer;
 import com.pbs.app.ImpactSearch.ProductResults.Result;
+import com.pbs.app.ImpactSearch.ProductResults.Program;
 
 
 //@RestController
@@ -111,6 +112,7 @@ public class ImpactSearch {
                             result.getManufacturer() != null && result.getManufacturer().getName() != null ? result.getManufacturer().getName() : "null",
                             result.getOffers().get(j).getMinCommissionPercentage() != null && result.getOffers().get(j).getMaxCommissionPercentage() != null ? result.getOffers().get(j).getMaxCommissionPercentage() : "null",
                             "Impact",
+                            result.getOffers().get(j).getProgram().getLogoUri() != null ? result.getOffers().get(j).getProgram().getLogoUri() : "null",
                             result.getOffers().get(j).getUrl() != null ? result.getOffers().get(j).getUrl() : "null",
                             result.getOffers().get(j).getOriginalUrl() != null ? result.getOffers().get(j).getOriginalUrl() : "null",
                             result.getOffers().get(j).getDescription() != null ? result.getOffers().get(j).getDescription() : "null",
@@ -157,6 +159,7 @@ public class ImpactSearch {
                             result.getManufacturer() != null && result.getManufacturer().getName() != null ? result.getManufacturer().getName() : "null",
                             result.getOffers().get(j).getMinCommissionPercentage() != null && result.getOffers().get(j).getMaxCommissionPercentage() != null ? result.getOffers().get(j).getMaxCommissionPercentage() : "null",
                             "Impact",
+                            result.getOffers().get(j).getProgram().getLogoUri() != null ? result.getOffers().get(j).getProgram().getLogoUri() : "null",
                             result.getOffers().get(j).getUrl() != null ? result.getOffers().get(j).getUrl() : "null",
                             result.getOffers().get(j).getOriginalUrl() != null ? result.getOffers().get(j).getOriginalUrl() : "null",
                             result.getOffers().get(j).getDescription() != null ? result.getOffers().get(j).getDescription() : "null",

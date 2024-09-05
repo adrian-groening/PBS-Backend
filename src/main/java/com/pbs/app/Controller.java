@@ -105,8 +105,8 @@ public class Controller {
         // Create an app product list of products to store results
         AppProductList appProducts = new AppProductList();
     
-        System.out.println("Impact API returned " + impactResults.toList().size() + " products");
-        System.out.println("Ebay API returned " + ebayResults.toList().size() + " products");
+        //System.out.println("Impact API returned " + impactResults.toList().size() + " products");
+        //System.out.println("Ebay API returned " + ebayResults.toList().size() + " products");
 
         //adds impact products to app product list if not null
         if (impactResults.toList() != null) {
