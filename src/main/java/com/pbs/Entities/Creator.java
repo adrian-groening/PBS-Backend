@@ -41,5 +41,9 @@ public class Creator {
     public void setPassword(String password) {
         this.password = password;
     }
+    public void generateCreatorID() {
+        this.creatorID = "C" + this.email;
+    }
+    
     
 }

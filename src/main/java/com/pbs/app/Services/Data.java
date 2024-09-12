@@ -14,7 +14,8 @@ import java.util.logging.Logger;
 import com.pbs.Entities.Creator;
 import com.pbs.Entities.Favorite;
 import com.pbs.Entities.Product;
-import com.pbs.Entities.ScanHistory;
+import com.pbs.Entities.Scan;
+import com.pbs.Entities.Share;
 
 public class Data {
     private static final Logger LOGGER = Logger.getLogger(Data.class.getName());
@@ -89,7 +90,7 @@ public class Data {
     
 
     public void insertProduct(Product product) throws SQLException {
-        String insertQuery = "INSERT INTO Product (productID, name, price, barcode, currency, imageURL, category, brand, commissionRate, affiliate, webURL, affiliateWebURL, description, earningsPerClick, totalSalesVolume, couponsAvailable, topRated, isNew, isPriorityListing, onSale, onPromotion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO Product (productID, name, price, barcode, currency, imageURL, category, brand, commissionRate, affiliate, webURL, affiliateWebURL, description, earningsPerClick, totalSalesVolume, couponsAvailable, topRated, isNew, isPriorityListing, onSale, onPromotionm, logoURI, mostRecentDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
         try (PreparedStatement p = con.prepareStatement(insertQuery)) {
             p.setString(1, product.getProductID());
@@ -113,6 +114,8 @@ public class Data {
             p.setBoolean(19, product.isPriorityListing());
             p.setBoolean(20, product.isOnSale());
             p.setBoolean(21, product.isOnPromotion());
+            p.setString(22, product.getLogoURI());
+            p.setString(23, product.getMostRecentDate());
             p.executeUpdate();
         }
     }
@@ -122,22 +125,36 @@ public class Data {
         Product product = new Product();
         s = con.createStatement();
         rs = s.executeQuery("SELECT * FROM Product WHERE productID = '" + productID + "'");
+        
         while (rs.next()) {
             product.setProductID(rs.getString("productID"));
+            product.setName(rs.getString("name"));
             product.setPrice(rs.getString("price"));
             product.setBarcode(rs.getString("barcode"));
-            product.setName(rs.getString("name"));
             product.setCurrency(rs.getString("currency"));
             product.setImageURL(rs.getString("imageURL"));
-            product.setLogoURI(rs.getString("logoUri"));
             product.setCategory(rs.getString("category"));
             product.setBrand(rs.getString("brand"));
-            product.setDescription(rs.getString("description"));
-            product.setAffiliate(rs.getString("affiliate"));
             product.setCommissionRate(rs.getString("commissionRate"));
+            product.setAffiliate(rs.getString("affiliate"));
+            product.setWebURL(rs.getString("webURL"));
+            product.setAffiliateWebURL(rs.getString("affiliateWebURL"));
+            product.setDescription(rs.getString("description"));
+            product.setEarningsPerClick(rs.getString("earningsPerClick"));
+            product.setTotalSalesVolume(rs.getString("totalSalesVolume"));
+            product.setCouponsAvailable(rs.getBoolean("couponsAvailable"));
+            product.setTopRated(rs.getBoolean("topRated"));
+            product.setNew(rs.getBoolean("isNew"));
+            product.setPriorityListing(rs.getBoolean("isPriorityListing"));
+            product.setOnSale(rs.getBoolean("onSale"));
+            product.setOnPromotion(rs.getBoolean("onPromotion"));
+            product.setLogoURI(rs.getString("logoURI"));
+            product.setMostRecentDate(rs.getString("mostRecentDate"));
         }
+        
         return product;
     }
+    
 
     public Product getProductUsingImage(String imageURL) throws SQLException {
         Product product = new Product();
@@ -197,13 +214,19 @@ public class Data {
         return rs.next();
     }
 
+    public boolean productWebURLExists(String webURL) throws SQLException {
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT * FROM Product WHERE webURL = '" + webURL + "'");
+        return rs.next();
+    }
+
     public void insertFavorite(Favorite favorite) throws SQLException {
-        p = con.prepareStatement("INSERT INTO Favorite VALUES(?,?,?)");
+        p = con.prepareStatement("INSERT INTO Favorite VALUES(?,?,?,?)");
         p.setString(1, favorite.getFavoriteID());
         p.setString(2, favorite.getCreatorID());
         p.setString(3, favorite.getProductID());
+        p.setString(4, favorite.getDateofFavorite());
         p.executeUpdate();
-        closeConnection();
     }
 
     public List<Favorite> getFavorites(String creatorID) throws SQLException {
@@ -220,14 +243,26 @@ public class Data {
         return favorites;
     }
 
-    //check to see if a favorite row exists using a creatorID and productID
+    public Favorite getFavorite(String favoriteID) throws SQLException {
+        Favorite favorite = new Favorite();
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT * FROM Favorite WHERE favoriteID = '" + favoriteID + "'");
+        while (rs.next()) {
+            favorite.setFavoriteID(rs.getString("favoriteID"));
+            favorite.setCreatorID(rs.getString("creatorID"));
+            favorite.setProductID(rs.getString("productID"));
+            favorite.setDateOfFavorite(rs.getString("dateOfFavorite"));
+        }
+        return favorite;
+    }
+
     public boolean favoriteExists(String creatorID, String productID) throws SQLException {
         s = con.createStatement();
         rs = s.executeQuery("SELECT * FROM Favorite WHERE creatorID = '" + creatorID + "' AND productID = '" + productID + "'");
         return rs.next();
     }
 
-    public void insertScanHistory(ScanHistory scanHistory) throws SQLException {
+    public void insertScanHistory(Scan scanHistory) throws SQLException {
         p = con.prepareStatement("INSERT INTO scan_history VALUES(?,?,?,?,?,?)");
         p.setString(1, scanHistory.getScanID());
         p.setString(2, scanHistory.getCreatorID());
@@ -238,8 +273,8 @@ public class Data {
         p.executeUpdate();
     }
 
-    public ScanHistory getScanHistory(String scanID) throws SQLException {
-        ScanHistory scanHistory = new ScanHistory();
+    public Scan getScanHistory(String scanID) throws SQLException {
+        Scan scanHistory = new Scan();
         s = con.createStatement();
         rs = s.executeQuery("SELECT * FROM scan_history WHERE scanID = '" + scanID + "'");
         while (rs.next()) {
@@ -253,12 +288,12 @@ public class Data {
         return scanHistory;
     }
 
-    public List<ScanHistory> getScanHistories(String creatorID) throws SQLException {
-        List<ScanHistory> scanHistories = new ArrayList<>();
+    public List<Scan> getScanHistories(String creatorID) throws SQLException {
+        List<Scan> scanHistories = new ArrayList<>();
         s = con.createStatement();
         rs = s.executeQuery("SELECT * FROM scan_history WHERE creatorID = '" + creatorID + "'");
         while (rs.next()) {
-            ScanHistory scanHistory = new ScanHistory();
+            Scan scanHistory = new Scan();
             scanHistory.setScanID(rs.getString("scanID"));
             scanHistory.setCreatorID(rs.getString("creatorID"));
             scanHistory.setProductBarcode(rs.getString("barcode"));
@@ -299,10 +334,591 @@ public class Data {
         s.executeUpdate("DELETE FROM Favorite WHERE favoriteID = '" + favoriteID + "'");
     }
 
+    //
+
     public void deleteScanHistory(String scanID) throws SQLException {
         s = con.createStatement();
-        s.executeUpdate("DELETE FROM ScanHistory WHERE scanID = '" + scanID + "'");
+        s.executeUpdate("DELETE FROM scan_history WHERE scanID = '" + scanID + "'");
     }
+
+    public void insertShare(Share share) throws SQLException {
+        p = con.prepareStatement("INSERT INTO Share VALUES(?,?,?,?)");
+        p.setString(1, share.getShareID());
+        p.setString(2, share.getCreatorID());
+        p.setString(3, share.getProductID());
+        p.setString(4, share.getDateOfShare());
+        p.executeUpdate();
+    }
+
+    public Share getShare(String shareID) throws SQLException {
+        Share share = new Share();
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT * FROM Share WHERE shareID = '" + shareID + "'");
+        while (rs.next()) {
+            share.setShareID(rs.getString("shareID"));
+            share.setCreatorID(rs.getString("creatorID"));
+            share.setProductID(rs.getString("productID"));
+            share.setDateOfShare(rs.getString("dateOfShare"));
+        }
+        return share;
+    }
+
+    public List<Share> getShares(String creatorID) throws SQLException {
+        List<Share> shares = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT * FROM Share WHERE creatorID = '" + creatorID + "'");
+        while (rs.next()) {
+            Share share = new Share();
+            share.setShareID(rs.getString("shareID"));
+            share.setCreatorID(rs.getString("creatorID"));
+            share.setProductID(rs.getString("productID"));
+            share.setDateOfShare(rs.getString("dateOfShare"));
+            shares.add(share);
+        }
+        return shares;
+    }
+
+
+    //share counts
+    public int getTotalShareCount() throws SQLException {
+        int count = 0;
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT COUNT(*) FROM Share");
+        while (rs.next()) {
+            count = rs.getInt(1);
+        }
+        return count;
+    }
+
+    public int getProductShareCount(String productID) throws SQLException {
+        int count = 0;
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT COUNT(*) FROM Share WHERE productID = '" + productID + "'");
+        while (rs.next()) {
+            count = rs.getInt(1);
+        }
+        return count;
+    }
+
+    public int getCreatorShareCount(String creatorID) throws SQLException {
+        int count = 0;
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT COUNT(*) FROM Share WHERE creatorID = '" + creatorID + "'");
+        while (rs.next()) {
+            count = rs.getInt(1);
+        }
+        return count;
+    }
+
+    // favoriute counts
+
+    public int getTotalFavoriteCount() throws SQLException {
+        int count = 0;
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT COUNT(*) FROM Favorite");
+        while (rs.next()) {
+            count = rs.getInt(1);
+        }
+        return count;
+    }
+
+    public int getProductFavoriteCount(String productID) throws SQLException {
+        int count = 0;
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT COUNT(*) FROM Favorite WHERE productID = '" + productID + "'");
+        while (rs.next()) {
+            count = rs.getInt(1);
+        }
+        return count;
+    }
+
+    public int getCreatorFavoriteCount(String creatorID) throws SQLException {
+        int count = 0;
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT COUNT(*) FROM Favorite WHERE creatorID = '" + creatorID + "'");
+        while (rs.next()) {
+            count = rs.getInt(1);
+        }
+        return count;
+    }
+
+
+    //scan counts
+    public int getTotalScanCount() throws SQLException {
+        int count = 0;
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT COUNT(*) FROM scan_history");
+        while (rs.next()) {
+            count = rs.getInt(1);
+        }
+        return count;
+    }
+
+    public int getProductScanCount(String productBarcode) throws SQLException {
+        int count = 0;
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT COUNT(*) FROM scan_history WHERE barcode = '" + productBarcode + "'");
+        while (rs.next()) {
+            count = rs.getInt(1);
+        }
+        return count;
+    }
+
+    public int getCreatorScanCount(String creatorID) throws SQLException {
+        int count = 0;
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT COUNT(*) FROM scan_history WHERE creatorID = '" + creatorID + "'");
+        while (rs.next()) {
+            count = rs.getInt(1);
+        }
+        return count;
+    }
+
+    // rankings
+    public List<Share> get5MostSharedProducts() throws SQLException {
+        List<Share> shares = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery(
+            "SELECT s.shareID, s.creatorID, s.productID, s.dateOfShare " +
+            "FROM Share s " +
+            "JOIN (SELECT productID, MAX(shareID) as latestShareID, COUNT(*) AS share_count " +
+            "      FROM Share " +
+            "      GROUP BY productID " +
+            "      ORDER BY share_count DESC " +
+            "      LIMIT 5) subquery " +
+            "ON s.shareID = subquery.latestShareID"
+        );
+        while (rs.next()) {
+            Share share = new Share();
+            share.setShareID(rs.getString("shareID"));
+            share.setCreatorID(rs.getString("creatorID"));
+            share.setProductID(rs.getString("productID"));
+            share.setDateOfShare(rs.getString("dateOfShare"));
+            shares.add(share);
+        }
+        return shares;
+    }
+
+    public List<Favorite> get5MostFavoritedProducts() throws SQLException {
+        List<Favorite> favorites = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery(
+            "SELECT f.favoriteID, f.creatorID, f.productID, f.dateOfFavorite " +
+            "FROM Favorite f " +
+            "JOIN (SELECT productID, MAX(favoriteID) as latestFavoriteID, COUNT(*) AS favorite_count " +
+            "      FROM Favorite " +
+            "      GROUP BY productID " +
+            "      ORDER BY favorite_count DESC " +
+            "      LIMIT 5) subquery " +
+            "ON f.favoriteID = subquery.latestFavoriteID"
+        );
+        while (rs.next()) {
+            Favorite favorite = new Favorite();
+            favorite.setFavoriteID(rs.getString("favoriteID"));
+            favorite.setCreatorID(rs.getString("creatorID"));
+            favorite.setProductID(rs.getString("productID"));
+            favorite.setDateOfFavorite(rs.getString("dateOfFavorite")); 
+            favorites.add(favorite);
+        }
+        return favorites;
+    }
+    
+
+    public List<Scan> get5MostScannedProducts() throws SQLException {
+        List<Scan> scanHistories = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery(
+            "SELECT sh.* FROM scan_history sh " +
+            "JOIN (SELECT barcode, MAX(scanID) as latestScanID, COUNT(*) AS scan_count " +
+            "      FROM scan_history " +
+            "      GROUP BY barcode " +
+            "      ORDER BY scan_count DESC " +
+            "      LIMIT 5) subquery " +
+            "ON sh.scanID = subquery.latestScanID"
+        );
+        while (rs.next()) {
+            Scan scanHistory = new Scan();
+            scanHistory.setScanID(rs.getString("scanID"));
+            scanHistory.setCreatorID(rs.getString("creatorID"));
+            scanHistory.setProductBarcode(rs.getString("barcode"));
+            scanHistory.setDateOfScan(rs.getString("dateOfScan"));
+            scanHistory.setName(rs.getString("name"));
+            scanHistory.setPhoto(rs.getString("photo"));
+            scanHistories.add(scanHistory);
+        }
+        return scanHistories;
+    }
+    
+
+
+    //most recent
+    public Share getMostRecentShare() throws SQLException {
+        Share share = new Share();
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT * FROM Share ORDER BY dateOfShare DESC LIMIT 1");
+        while (rs.next()) {
+            share.setShareID(rs.getString("shareID"));
+            share.setCreatorID(rs.getString("creatorID"));
+            share.setProductID(rs.getString("productID"));
+            share.setDateOfShare(rs.getString("dateOfShare"));
+        }
+        return share;
+    }
+
+    public Favorite getMostRecentFavorite() throws SQLException {
+        Favorite favorite = new Favorite();
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT * FROM Favorite ORDER BY dateOfFavorite DESC LIMIT 1");
+        while (rs.next()) {
+            favorite.setFavoriteID(rs.getString("favoriteID"));
+            favorite.setCreatorID(rs.getString("creatorID"));
+            favorite.setProductID(rs.getString("productID"));
+        }
+        return favorite;
+    }
+
+    public Scan getMostRecentScan() throws SQLException {
+        Scan scanHistory = new Scan();
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT * FROM scan_history ORDER BY dateOfScan DESC LIMIT 1");
+        while (rs.next()) {
+            scanHistory.setScanID(rs.getString("scanID"));
+            scanHistory.setCreatorID(rs.getString("creatorID"));
+            scanHistory.setProductBarcode(rs.getString("barcode"));
+            scanHistory.setDateOfScan(rs.getString("dateOfScan"));
+            scanHistory.setName(rs.getString("name"));
+            scanHistory.setPhoto(rs.getString("photo"));
+        }
+        return scanHistory;
+    }
+
+    //gets all scanned products
+    public List<Product> getAllScannedProducts() throws SQLException {
+        List<Product> products = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT * FROM Product WHERE barcode IN (SELECT barcode FROM scan_history)");
+        while (rs.next()) {
+            Product product = new Product();
+            product.setProductID(rs.getString("productID"));
+            product.setPrice(rs.getString("price"));
+            product.setBarcode(rs.getString("barcode"));
+            product.setName(rs.getString("name"));
+            product.setCurrency(rs.getString("currency"));
+            product.setImageURL(rs.getString("imageURL"));
+            product.setCategory(rs.getString("category"));
+            product.setBrand(rs.getString("brand"));
+            product.setDescription(rs.getString("description"));
+            product.setAffiliate(rs.getString("affiliate"));
+            product.setCommissionRate(rs.getString("commissionRate"));
+            products.add(product);
+        }
+        return products;
+    }
+
+    //gets all shared products
+    public List<Product> getAllSharedProducts() throws SQLException {
+        List<Product> products = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT * FROM Product WHERE productID IN (SELECT productID FROM Share)");
+        while (rs.next()) {
+            Product product = new Product();
+            product.setProductID(rs.getString("productID"));
+            product.setPrice(rs.getString("price"));
+            product.setBarcode(rs.getString("barcode"));
+            product.setName(rs.getString("name"));
+            product.setCurrency(rs.getString("currency"));
+            product.setImageURL(rs.getString("imageURL"));
+            product.setCategory(rs.getString("category"));
+            product.setBrand(rs.getString("brand"));
+            product.setDescription(rs.getString("description"));
+            product.setAffiliate(rs.getString("affiliate"));
+            product.setCommissionRate(rs.getString("commissionRate"));
+            products.add(product);
+        }
+        return products;
+    }
+
+    //gets all favorited products
+    public List<Product> getAllFavoritedProducts() throws SQLException {
+        List<Product> products = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery("SELECT * FROM Product WHERE productID IN (SELECT productID FROM Favorite)");
+        while (rs.next()) {
+            Product product = new Product();
+            product.setProductID(rs.getString("productID"));
+            product.setPrice(rs.getString("price"));
+            product.setBarcode(rs.getString("barcode"));
+            product.setName(rs.getString("name"));
+            product.setCurrency(rs.getString("currency"));
+            product.setImageURL(rs.getString("imageURL"));
+            product.setCategory(rs.getString("category"));
+            product.setBrand(rs.getString("brand"));
+            product.setDescription(rs.getString("description"));
+            product.setAffiliate(rs.getString("affiliate"));
+            product.setCommissionRate(rs.getString("commissionRate"));
+            products.add(product);
+        }
+        return products;
+    }
+
+    //5 most scanned brands
+    public List<String> get5MostScannedBrands() throws SQLException {
+        List<String> brands = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery(
+            "SELECT p.brand, COUNT(*) AS scan_count " +
+            "FROM Product p " +
+            "JOIN scan_history sh ON p.barcode = sh.barcode " +
+            "GROUP BY p.brand " +
+            "ORDER BY scan_count DESC " +
+            "LIMIT 5"
+        );
+        while (rs.next()) {
+            brands.add(rs.getString("brand"));
+        }
+        return brands;
+    }
+
+    //5 most favorited brands
+    public List<String> get5MostFavoritedBrands() throws SQLException {
+        List<String> brands = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery(
+            "SELECT p.brand, COUNT(*) AS favorite_count " +
+            "FROM Product p " +
+            "JOIN Favorite f ON p.productID = f.productID " +
+            "GROUP BY p.brand " +
+            "ORDER BY favorite_count DESC " +
+            "LIMIT 5"
+        );
+        while (rs.next()) {
+            brands.add(rs.getString("brand"));
+        }
+        return brands;
+    }
+
+    
+
+    //brand and category
+    public String getMostScannedBrand() throws SQLException {
+        //get list of scanned products using scan hisotry
+        List<Product> products = new ArrayList<>();
+        products = getAllScannedProducts();
+
+        //get the most scanned brand
+        String mostScannedBrand = "";
+        int maxCount = 0;
+        for (Product product : products) {
+            int count = 0;
+            for (Product product2 : products) {
+                if (product.getBrand().equals(product2.getBrand())) {
+                    count++;
+                }
+            }
+            if (count > maxCount) {
+                maxCount = count;
+                mostScannedBrand = product.getBrand();
+            }
+        }
+        return mostScannedBrand;
+    }
+
+    //5 most shared brands
+    public List<String> get5MostSharedBrands() throws SQLException {
+        List<String> brands = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery(
+            "SELECT p.brand, COUNT(*) AS share_count " +
+            "FROM Product p " +
+            "JOIN Share s ON p.productID = s.productID " +
+            "GROUP BY p.brand " +
+            "ORDER BY share_count DESC " +
+            "LIMIT 5"
+        );
+        while (rs.next()) {
+            brands.add(rs.getString("brand"));
+        }
+        return brands;
+    }
+
+    public String getMostSharedBrand() throws SQLException {
+        //get list of shared products using share
+        List<Product> products = new ArrayList<>();
+        products = getAllSharedProducts();
+
+        //get the most shared brand
+        String mostSharedBrand = "";
+        int maxCount = 0;
+        for (Product product : products) {
+            int count = 0;
+            for (Product product2 : products) {
+                if (product.getBrand().equals(product2.getBrand())) {
+                    count++;
+                }
+            }
+            if (count > maxCount) {
+                maxCount = count;
+                mostSharedBrand = product.getBrand();
+            }
+        }
+        return mostSharedBrand;
+    }
+
+    public String getMostFavoritedBrand() throws SQLException {
+        //get list of favorited products using favorite
+        List<Product> products = new ArrayList<>();
+        products = getAllFavoritedProducts();
+
+        //get the most favorited brand
+        String mostFavoritedBrand = "";
+        int maxCount = 0;
+        for (Product product : products) {
+            int count = 0;
+            for (Product product2 : products) {
+                if (product.getBrand().equals(product2.getBrand())) {
+                    count++;
+                }
+            }
+            if (count > maxCount) {
+                maxCount = count;
+                mostFavoritedBrand = product.getBrand();
+            }
+        }
+        return mostFavoritedBrand;
+    }
+
+    public String getMostScannedCategory() throws SQLException {
+        //get list of scanned products using scan hisotry
+        List<Product> products = new ArrayList<>();
+        products = getAllScannedProducts();
+
+        //get the most scanned category
+        String mostScannedCategory = "";
+        int maxCount = 0;
+        for (Product product : products) {
+            int count = 0;
+            for (Product product2 : products) {
+                if (product.getCategory().equals(product2.getCategory())) {
+                    count++;
+                }
+            }
+            if (count > maxCount) {
+                maxCount = count;
+                mostScannedCategory = product.getCategory();
+            }
+        }
+        return mostScannedCategory;
+    }
+
+    public String getMostSharedCategory() throws SQLException {
+        //get list of shared products using share
+        List<Product> products = new ArrayList<>();
+        products = getAllSharedProducts();
+
+        //get the most shared category
+        String mostSharedCategory = "";
+        int maxCount = 0;
+        for (Product product : products) {
+            int count = 0;
+            for (Product product2 : products) {
+                if (product.getCategory().equals(product2.getCategory())) {
+                    count++;
+                }
+            }
+            if (count > maxCount) {
+                maxCount = count;
+                mostSharedCategory = product.getCategory();
+            }
+        }
+        return mostSharedCategory;
+    }
+
+    public String getMostFavoritedCategory() throws SQLException {
+        //get list of favorited products using favorite
+        List<Product> products = new ArrayList<>();
+        products = getAllFavoritedProducts();
+
+        //get the most favorited category
+        String mostFavoritedCategory = "";
+        int maxCount = 0;
+        for (Product product : products) {
+            int count = 0;
+            for (Product product2 : products) {
+                if (product.getCategory().equals(product2.getCategory())) {
+                    count++;
+                }
+            }
+            if (count > maxCount) {
+                maxCount = count;
+                mostFavoritedCategory = product.getCategory();
+            }
+        }
+        return mostFavoritedCategory;
+    }
+
+    //5 most scanned categories
+    public List<String> get5MostScannedCategories() throws SQLException {
+        List<String> categories = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery(
+            "SELECT p.category, COUNT(*) AS scan_count " +
+            "FROM Product p " +
+            "JOIN scan_history sh ON p.barcode = sh.barcode " +
+            "GROUP BY p.category " +
+            "ORDER BY scan_count DESC " +
+            "LIMIT 5"
+        );
+        while (rs.next()) {
+            categories.add(rs.getString("category"));
+        }
+        return categories;
+    }
+
+    //5 most shared categories
+    public List<String> get5MostSharedCategories() throws SQLException {
+        List<String> categories = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery(
+            "SELECT p.category, COUNT(*) AS share_count " +
+            "FROM Product p " +
+            "JOIN Share s ON p.productID = s.productID " +
+            "GROUP BY p.category " +
+            "ORDER BY share_count DESC " +
+            "LIMIT 5"
+        );
+        while (rs.next()) {
+            categories.add(rs.getString("category"));
+        }
+        return categories;
+    }
+
+    //5 most favorited categories
+    public List<String> get5MostFavoritedCategories() throws SQLException {
+        List<String> categories = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery(
+            "SELECT p.category, COUNT(*) AS favorite_count " +
+            "FROM Product p " +
+            "JOIN Favorite f ON p.productID = f.productID " +
+            "GROUP BY p.category " +
+            "ORDER BY favorite_count DESC " +
+            "LIMIT 5"
+        );
+        while (rs.next()) {
+            categories.add(rs.getString("category"));
+        }
+        return categories;
+    }
+
+
+    
+
+    
+
+
+
+    
+    
 
 
 

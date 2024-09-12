@@ -123,7 +123,8 @@ public class ImpactSearch {
                             result.getOffers().get(j).isNew(),
                             false,
                             result.containsOfferOnSale(),
-                            result.containsOfferOnPromotion()
+                            result.containsOfferOnPromotion(),
+                            result.getOffers().get(j).getLastUpdated()
                         );
                         ImpactProducts.add(p);
                     }
@@ -170,7 +171,8 @@ public class ImpactSearch {
                             result.getOffers().get(j).isNew(),
                             false,
                             result.containsOfferOnSale(),
-                            result.containsOfferOnPromotion()
+                            result.containsOfferOnPromotion(),
+                            result.getOffers().get(j).getLastUpdated()
                         );
                         ImpactProducts.add(p);
                     }

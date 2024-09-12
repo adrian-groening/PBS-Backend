@@ -1,10 +1,7 @@
 package com.pbs.Entities;
 
-
-
-
 public class Product {
-    String productID, name, price, barcode, currency, category, brand, commissionRate, affiliate, logoUri, webURL, affiliateWebURL, description, earningsPerClick, totalSalesVolume, imageURL;
+    String productID, name, price, barcode, currency, category, brand, commissionRate, affiliate, logoUri, webURL, affiliateWebURL, description, earningsPerClick, totalSalesVolume, imageURL, mostRecentDate;
     boolean couponsAvailable, topRated, isNew, isPriorityListing, onSale, onPromotion;
     public int points;
 
@@ -14,7 +11,7 @@ public class Product {
     public Product(String productID, String name, String price, String barcode, String currency, String imageURL, String category, String brand, String commissionRate,
                    String affiliate, String logoUri, String webURL, String affiliateWebURL, String description, String earningsPerClick,
                    String totalSalesVolume, boolean couponsAvailable, boolean topRated, boolean isNew, boolean isPriorityListing,
-                   boolean onSale, boolean onPromotion) {
+                   boolean onSale, boolean onPromotion, String mostRecentDate) {
         this.productID= productID;
         this.name = name;
         this.price = price;
@@ -37,6 +34,7 @@ public class Product {
         this.isPriorityListing = isPriorityListing;
         this.onSale = onSale;
         this.onPromotion = onPromotion;
+        this.mostRecentDate = mostRecentDate;
         points = 0;
     }
     public String getProductID() {
@@ -171,6 +169,12 @@ public class Product {
     public void setOnPromotion(boolean onPromotion) {
         this.onPromotion = onPromotion;
     }
+    public String getMostRecentDate() {
+        return mostRecentDate;
+    }
+    public void setMostRecentDate(String mostRecentDate) {
+        this.mostRecentDate = mostRecentDate;
+    }
     public void tallyPoints() {
         if (isNew) {
             points += 1;
@@ -191,6 +195,8 @@ public class Product {
             points += 1;
         }
     }
+
+
 
 
    

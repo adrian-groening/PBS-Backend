@@ -8,11 +8,14 @@ public class ProductResults {
     
     @SerializedName("Results")
     public List<Result> Results;
+
     ProductResults() {
     }
+
     ProductResults(List<Result> results) {
         Results = results;
     }
+    
     public List<Result> getResults() {
         return Results;
     }

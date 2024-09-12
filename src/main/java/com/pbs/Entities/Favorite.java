@@ -1,13 +1,17 @@
 package com.pbs.Entities;
 
+import java.time.LocalDate;
+import java.util.Random;
+
 public class Favorite {
-    String favoriteID, creatorID, productID;
+    String favoriteID, creatorID, productID, dateOfFavorite;
     public Favorite() {
     }
-    public Favorite(String favoriteID, String creatorID, String productID) {
+    public Favorite(String favoriteID, String creatorID, String productID, String dateOfFavorite) {
         this.favoriteID = favoriteID;
         this.creatorID = creatorID;
         this.productID = productID;
+        this.dateOfFavorite = dateOfFavorite;
     }
     public String getFavoriteID() {
         return favoriteID;
@@ -26,5 +30,19 @@ public class Favorite {
     }
     public void setProductID(String productID) {
         this.productID = productID;
+    }
+    public String getDateofFavorite() {
+        return dateOfFavorite;
+    }
+    public void setDateOfFavorite(String dateOfFavorite) {
+        this.dateOfFavorite = dateOfFavorite;
+    }
+    public void generateFavoriteID() {
+        Random rand = new Random();
+        this.favoriteID = "F" + rand.nextInt(1000000);
+    }
+    public void generateDateOfFavorite() {
+        LocalDate date = LocalDate.now();
+        this.dateOfFavorite = date.toString();
     }
 }

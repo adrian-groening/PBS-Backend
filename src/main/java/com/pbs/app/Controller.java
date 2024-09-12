@@ -19,7 +19,8 @@ import com.google.gson.JsonParser;
 import com.pbs.Entities.Creator;
 import com.pbs.Entities.Favorite;
 import com.pbs.Entities.Product;
-import com.pbs.Entities.ScanHistory;
+import com.pbs.Entities.Scan;
+import com.pbs.Entities.Share;
 import com.pbs.app.EbaySearch.EbaySearch;
 import com.pbs.app.ImpactSearch.ImpactSearch;
 import com.pbs.app.Repositories.AppProductList;
@@ -33,7 +34,9 @@ public class Controller {
 
     //retrieves barcodes from ebay and impact apis
     @PostMapping("/barcode")
-    public ResponseEntity<String> barcode(@RequestBody String stringData, @RequestParam(required = false, defaultValue = "value") String sortAttribute) throws IOException, InterruptedException {
+    public ResponseEntity<String> barcode(@RequestBody String stringData, @RequestParam(required = false, defaultValue = "value") String sortAttribute) throws IOException, InterruptedException, SQLException {
+
+        data.openConnection();
 
         //remove quotation mark from string
         System.out.println("Received string from frontend: " + stringData);
@@ -73,6 +76,21 @@ public class Controller {
             case "commission" -> appProducts.sortByCommission();
             case "value" -> appProducts.sortByValue();
             default -> {
+            }
+        }
+
+        for (Product product : appProducts.getProducts()) {
+            if (!data.productBarcodeExists(product.getBarcode())) {
+                data.insertProduct(product);
+            } else if (!data.productNameExists(product.getName())) {
+                data.insertProduct(product);
+            } else if (!data.productImageURLExists(product.getImageURL())) {
+                data.insertProduct(product);
+            } else if (!data.productWebURLExists(product.getWebURL())){
+                data.insertProduct(product);
+            } else {
+                System.out.println("Product already exists in database");
+
             }
         }
         
@@ -173,6 +191,8 @@ public class Controller {
                 data.insertProduct(product);
             } else if (!data.productImageURLExists(product.getImageURL())) {
                 data.insertProduct(product);
+            } else if (!data.productWebURLExists(product.getWebURL())){
+                data.insertProduct(product);
             } else {
                 System.out.println("Product already exists in database");
                 product = data.getProductUsingImage(product.getImageURL());
@@ -186,7 +206,7 @@ public class Controller {
             if (data.favoriteExists(creator.getCreatorID(), product.getProductID())) {
                 System.out.println("Favorite already exists in database");
             } else {
-                data.insertFavorite(new Favorite("F" + random, creator.getCreatorID(), product.getProductID()));
+                data.insertFavorite(new Favorite("F" + random, creator.getCreatorID(), product.getProductID(), java.time.LocalDate.now().toString()));
             }
     
         } else if (action.equals("get")) {
@@ -215,12 +235,12 @@ public class Controller {
         //open database connection
         data.openConnection();
         Creator creator = data.getCreator(email);
-        List<ScanHistory> history = null;
+        List<Scan> history = null;
 
         if (action.equals("add")) {
             String todaysDate = java.time.LocalDate.now().toString();
             Random  rand = new Random();
-            data.insertScanHistory(new ScanHistory("SH" + rand.nextInt(100000), creator.getCreatorID(), barcode, todaysDate, name, photo));
+            data.insertScanHistory(new Scan("SH" + rand.nextInt(1000000), creator.getCreatorID(), barcode, todaysDate, name, photo));
         } else if (action.equals("get")) {
         //fetch favs from database
             history = data.getScanHistories(creator.getCreatorID());
@@ -284,6 +304,261 @@ public class Controller {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PostMapping("/mostrecentscan")
+    public ResponseEntity<String> mostRecentScan() throws SQLException {
+        data.openConnection();
+        Scan recentScan = data.getMostRecentScan();
+
+        Gson gson = new Gson();
+        String json = gson.toJson(recentScan);   
+
+        data.closeConnection();
+
+        return ResponseEntity.status(HttpStatus.OK).body(json);
+    }
+
+    @PostMapping("/rankingofmostscanned")
+    public ResponseEntity<String> rankingOfMostScanned() throws SQLException {
+        data.openConnection();
+        List<Scan> mostScanned = data.get5MostScannedProducts();
+
+        Gson gson = new Gson();
+        String json = gson.toJson(mostScanned);   
+
+        data.closeConnection();
+
+        return ResponseEntity.status(HttpStatus.OK).body(json);
+    }
+
+    @PostMapping("/numberofscansforproduct")
+    public ResponseEntity<String> numberOfScansForProduct(@RequestParam(required = true, defaultValue = "none") String barcode) throws SQLException {
+        data.openConnection();
+        int numberOfScans = data.getProductScanCount(barcode);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(numberOfScans);   
+
+        data.closeConnection();
+
+        return ResponseEntity.status(HttpStatus.OK).body(json);
+    }
+
+    @PostMapping("/productfavoritecount")
+    public ResponseEntity<String> productFavoriteCount(@RequestParam(required = true, defaultValue = "none") String productID) throws SQLException {
+        data.openConnection();
+        int favoriteCount = data.getProductFavoriteCount(productID);
+        return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(favoriteCount));
+    }
+
+    @PostMapping("/rankingofmostfavorited")
+    public ResponseEntity<String> rankingOfMostFavorited() throws SQLException {
+        data.openConnection();
+        List<Favorite> mostFavoritedList = data.get5MostFavoritedProducts();
+        List<Product> mostFavoritedProductList = new ArrayList();
+
+
+        for (Favorite favorite : mostFavoritedList) {
+            Product fav = data.getProduct(favorite.getProductID());
+            mostFavoritedProductList.add(fav);
+        }
+
+        Gson gson = new Gson();
+        String json = gson.toJson(mostFavoritedProductList);   
+
+        data.closeConnection();
+
+        return ResponseEntity.status(HttpStatus.OK).body(json);
+    }
+
+    @PostMapping("/mostrecentfavorite")
+    public ResponseEntity<String> mostRecentFavorite() throws SQLException {
+        data.openConnection();
+        Favorite recentFavorite = data.getMostRecentFavorite();
+        Product product = data.getProduct(recentFavorite.getProductID());
+
+        Gson gson = new Gson();
+        String json = gson.toJson(product);   
+
+        data.closeConnection();
+
+        return ResponseEntity.status(HttpStatus.OK).body(json);
+    }
+
+    @PostMapping("/productsharecount")
+    public ResponseEntity<String> productShareCount(@RequestParam(required = true, defaultValue = "none") String productID) throws SQLException {
+        data.openConnection();
+        int shareCount = data.getProductShareCount(productID);
+        return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(shareCount));
+    }
+
+    @PostMapping("/rankingofmostshared")
+    public ResponseEntity<String> rankingOfMostShared() throws SQLException {
+        data.openConnection();
+
+        List<Share> mostSharedList = data.get5MostSharedProducts();
+
+        List<Product> mostSharedProductList = new ArrayList();
+
+        for (Share share : mostSharedList) {
+            Product fav = data.getProduct(share.getProductID());
+            mostSharedProductList.add(fav);
+        }
+
+        Gson gson = new Gson();
+        String json = gson.toJson(mostSharedProductList);   
+
+        data.closeConnection();
+
+        return ResponseEntity.status(HttpStatus.OK).body(json);
+    }
+
+    @PostMapping("/mostrecentshare")
+    public ResponseEntity<String> mostRecentShare() throws SQLException {
+        data.openConnection();
+        Share recentShare = data.getMostRecentShare();
+        Product product = data.getProduct(recentShare.getProductID());
+
+        Gson gson = new Gson();
+        String json = gson.toJson(product);   
+
+        data.closeConnection();
+
+        return ResponseEntity.status(HttpStatus.OK).body(json);
+    }
+
+    @PostMapping("/creatorscancount")
+    public ResponseEntity<String> creatorsScanCount(@RequestParam(required = true, defaultValue = "none") String email) throws SQLException {
+        data.openConnection();
+        Creator creator = data.getCreator(email);
+        int scanCount = data.getCreatorScanCount(creator.getCreatorID());
+        return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(scanCount));
+    }
+
+    @PostMapping("/creatorfavoritecount")
+    public ResponseEntity<String> creatorsFavoriteCount(@RequestParam(required = true, defaultValue = "none") String email) throws SQLException {
+        data.openConnection();
+        Creator creator = data.getCreator(email);
+        int favoriteCount = data.getCreatorFavoriteCount(creator.getCreatorID());
+        return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(favoriteCount));
+    }
+
+    @PostMapping("/creatorsharecount")
+    public ResponseEntity<String> creatorsShareCount(@RequestParam(required = true, defaultValue = "none") String email) throws SQLException {
+        data.openConnection();
+        Creator creator = data.getCreator(email);
+        int shareCount = data.getCreatorShareCount(creator.getCreatorID());
+        return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(shareCount));
+    }
+
+    @PostMapping("/mostscannedbrand")
+    public ResponseEntity<String> mostScannedBrand() throws SQLException {
+        data.openConnection();
+        String mostScannedBrand = data.getMostScannedBrand();
+        return ResponseEntity.status(HttpStatus.OK).body(mostScannedBrand);
+    }
+
+    @PostMapping("/mostfavoritedbrand")
+    public ResponseEntity<String> mostFavoritedBrand() throws SQLException {
+        data.openConnection();
+        String mostFavoritedBrand = data.getMostFavoritedBrand();
+        return ResponseEntity.status(HttpStatus.OK).body(mostFavoritedBrand);
+    }
+
+    @PostMapping("/mostsharedbrand")
+    public ResponseEntity<String> mostSharedBrand() throws SQLException {
+        data.openConnection();
+        String mostSharedBrand = data.getMostSharedBrand();
+        return ResponseEntity.status(HttpStatus.OK).body(mostSharedBrand);
+    }
+
+    @PostMapping("/mostscannedcategory")
+    public ResponseEntity<String> mostScannedCategory() throws SQLException {
+        data.openConnection();
+        String mostScannedCategory = data.getMostScannedCategory();
+        return ResponseEntity.status(HttpStatus.OK).body(mostScannedCategory);
+    }
+
+    @PostMapping("/mostfavoritedcategory")
+    public ResponseEntity<String> mostFavoritedCategory() throws SQLException {
+        data.openConnection();
+        String mostFavoritedCategory = data.getMostFavoritedCategory();
+        return ResponseEntity.status(HttpStatus.OK).body(mostFavoritedCategory);
+    }
+
+    @PostMapping("/mostsharedcategory")
+    public ResponseEntity<String> mostSharedCategory() throws SQLException {
+        data.openConnection();
+        String mostSharedCategory = data.getMostSharedCategory();
+        return ResponseEntity.status(HttpStatus.OK).body(mostSharedCategory);
+    }
+
+    @PostMapping("/totalscancount")
+    public ResponseEntity<String> totalScanCount() throws SQLException {
+        data.openConnection();
+        int totalScanCount = data.getTotalScanCount();
+        return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(totalScanCount));
+    }
+
+    @PostMapping("/totalfavoritecount")
+    public ResponseEntity<String> totalFavoriteCount() throws SQLException {
+        data.openConnection();
+        int totalFavoriteCount = data.getTotalFavoriteCount();
+        return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(totalFavoriteCount));
+    }
+
+    @PostMapping("/totalsharecount")
+    public ResponseEntity<String> totalShareCount() throws SQLException {
+        data.openConnection();
+        int totalShareCount = data.getTotalShareCount();
+        return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(totalShareCount));
+    }
+
+    @PostMapping("/mostscannedbrands")
+    public ResponseEntity<String> mostScannedBrands() throws SQLException {
+        data.openConnection();
+        List<String> mostScannedBrands = data.get5MostScannedBrands();
+        return ResponseEntity.status(HttpStatus.OK).body(mostScannedBrands.toString());
+    }
+
+    @PostMapping("/mostfavoritedbrands")
+    public ResponseEntity<String> mostFavoritedBrands() throws SQLException {
+        data.openConnection();
+        List<String> mostFavoritedBrands = data.get5MostFavoritedBrands();
+        return ResponseEntity.status(HttpStatus.OK).body(mostFavoritedBrands.toString());
+    }
+
+    @PostMapping("/mostsharedbrands")
+    public ResponseEntity<String> mostSharedBrands() throws SQLException {
+        data.openConnection();
+        List<String> mostSharedBrands = data.get5MostSharedBrands();
+        return ResponseEntity.status(HttpStatus.OK).body(mostSharedBrands.toString());
+    }
+
+    @PostMapping("/mostscannedcategories")
+    public ResponseEntity<String> mostScannedCategories() throws SQLException {
+        data.openConnection();
+        List<String> mostScannedCategories = data.get5MostScannedCategories();
+        return ResponseEntity.status(HttpStatus.OK).body(mostScannedCategories.toString());
+    }
+
+    @PostMapping("/mostfavoritedcategories")
+    public ResponseEntity<String> mostFavoritedCategories() throws SQLException {
+        data.openConnection();
+        List<String> mostFavoritedCategories = data.get5MostFavoritedCategories();
+        return ResponseEntity.status(HttpStatus.OK).body(mostFavoritedCategories.toString());
+    }
+
+    @PostMapping("/mostsharedcategories")
+    public ResponseEntity<String> mostSharedCategories() throws SQLException {
+        data.openConnection();
+        List<String> mostSharedCategories = data.get5MostSharedCategories();
+        return ResponseEntity.status(HttpStatus.OK).body(mostSharedCategories.toString());
+    }
+
+
+
+
 
     
 
