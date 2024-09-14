@@ -129,7 +129,7 @@ public class Data {
             product.setName(rs.getString("name"));
             product.setCurrency(rs.getString("currency"));
             product.setImageURL(rs.getString("imageURL"));
-            product.setLogoURI(rs.getString("logoUri"));
+            product.setLogoURI(rs.getString("logoURI"));
             product.setCategory(rs.getString("category"));
             product.setBrand(rs.getString("brand"));
             product.setDescription(rs.getString("description"));
