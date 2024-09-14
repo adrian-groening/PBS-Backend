@@ -305,6 +305,56 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PostMapping("/share")
+    public ResponseEntity<String> share(@RequestParam(required = true, defaultValue = "none") String email, String action, String product) throws SQLException {
+        data.openConnection();
+        Creator creator = data.getCreator(email);
+        
+        if (action.equals("add")) {
+            Share share = new Share();
+            share.setCreatorID(creator.getCreatorID());
+            share.generateDateOfShare();
+            share.generateShareID();
+
+            Product productObj = new Gson().fromJson(product, Product.class);
+            
+            //check if its in database
+            if (!data.productBarcodeExists(productObj.getBarcode())) {
+                data.insertProduct(productObj);
+            } else if (!data.productNameExists(productObj.getName())) {
+                data.insertProduct(productObj);
+            } else if (!data.productImageURLExists(productObj.getImageURL())) {
+                data.insertProduct(productObj);
+            } else if (!data.productWebURLExists(productObj.getWebURL())){
+                data.insertProduct(productObj);
+            } else {
+                System.out.println("Product exists");
+                productObj = data.getProductUsingImage(productObj.getImageURL());
+            }
+
+            share.setProductID(productObj.getProductID());
+            data.insertShare(share);
+            data.closeConnection();
+
+            return ResponseEntity.status(HttpStatus.OK).body("Share added");
+
+        } else if (action.equals("get")) {
+            List<Share> shares = data.getShares(creator.getCreatorID());
+            List<Product> products = new ArrayList<>();
+            for (Share share : shares) {
+                products.add(data.getProduct(share.getProductID()));
+            }
+            Gson gson = new Gson();
+            String json = gson.toJson(products);   
+            data.closeConnection();
+            return ResponseEntity.status(HttpStatus.OK).body(json);
+        } else {
+            data.closeConnection();
+            return ResponseEntity.status(HttpStatus.OK).body("No action");
+        }
+
+    }
+
     @PostMapping("/mostrecentscan")
     public ResponseEntity<String> mostRecentScan() throws SQLException {
         data.openConnection();

@@ -4,11 +4,15 @@ package com.pbs.app;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.ResponseEntity;
 
-import com.pbs.app.Services.Data;
+import com.google.gson.Gson;
+import com.pbs.Entities.Product;
+import com.pbs.app.ImpactSearch.ImpactSearch;
 
 
 
@@ -18,29 +22,27 @@ public class AppApplication {
 	public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
 		SpringApplication.run(AppApplication.class, args);
 
-		Data data = new Data();
-		data.openConnection();
-
-		//for (Favorite favorite : data.get5MostFavoritedProducts()) {
-		//	System.out.println(favorite.getProductID());
-		//}
-
-		//System.out.println(data.getMostRecentFavorite().getProductID());
-        
 		Controller controller = new Controller();
 
-		//ResponseEntity<String> response = controller.mostSharedCategories();
-		//System.out.println(response.getBody());
+		ImpactSearch impactSearch = new ImpactSearch("car", "name");
+		
+		List<Product> products = impactSearch.toList();
 
-		System.out.println(data.getProduct("P2085239638").getLogoURI());
+		Gson gson = new Gson();
+
+		String productJson = gson.toJson(products.get(1));
+
+		System.out.println(productJson);
+
+		ResponseEntity<String> response = controller.share("groeningadrian@gmail.com", "get", productJson);
+
+		System.out.println("\n GET ___________________________ \n"+response.getBody());
+
 		
 
 
+
 		
-
-
-		//System.out.println();
-
 	}
 
 }

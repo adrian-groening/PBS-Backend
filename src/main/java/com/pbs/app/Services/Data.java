@@ -17,6 +17,7 @@ import com.pbs.Entities.Product;
 import com.pbs.Entities.Scan;
 import com.pbs.Entities.Share;
 
+
 public class Data {
     private static final Logger LOGGER = Logger.getLogger(Data.class.getName());
 
@@ -90,7 +91,7 @@ public class Data {
     
 
     public void insertProduct(Product product) throws SQLException {
-        String insertQuery = "INSERT INTO Product (productID, name, price, barcode, currency, imageURL, category, brand, commissionRate, affiliate, webURL, affiliateWebURL, description, earningsPerClick, totalSalesVolume, couponsAvailable, topRated, isNew, isPriorityListing, onSale, onPromotionm, logoURI, mostRecentDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO Product (productID, name, price, barcode, currency, imageURL, category, brand, commissionRate, affiliate, webURL, affiliateWebURL, description, earningsPerClick, totalSalesVolume, couponsAvailable, topRated, isNew, isPriorityListing, onSale, onPromotion, logoURI, mostRecentDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
         try (PreparedStatement p = con.prepareStatement(insertQuery)) {
             p.setString(1, product.getProductID());
