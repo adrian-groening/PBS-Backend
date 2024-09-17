@@ -1,0 +1,70 @@
+-------------------------------------------------------------------------------
+Test set: com.pbs.app.ControllerTests
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 6, Errors: 0, Skipped: 0, Time elapsed: 31.90 s <<< FAILURE! -- in com.pbs.app.ControllerTests
+com.pbs.app.ControllerTests.testRankingOfMostFavorited -- Time elapsed: 5.210 s <<< FAILURE!
+java.lang.AssertionError: Content type expected:<application/json> but was:<text/plain;charset=UTF-8>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.ContentResultMatchers.lambda$contentType$0(ContentResultMatchers.java:86)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.pbs.app.ControllerTests.testRankingOfMostFavorited(ControllerTests.java:128)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.pbs.app.ControllerTests.testRankingOfMostScanned -- Time elapsed: 3.120 s <<< FAILURE!
+java.lang.AssertionError: Content type expected:<application/json> but was:<text/plain;charset=UTF-8>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.ContentResultMatchers.lambda$contentType$0(ContentResultMatchers.java:86)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.pbs.app.ControllerTests.testRankingOfMostScanned(ControllerTests.java:143)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.pbs.app.ControllerTests.testMostScannedBrands -- Time elapsed: 3.366 s <<< FAILURE!
+java.lang.AssertionError: Content type expected:<application/json> but was:<text/plain;charset=UTF-8>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.ContentResultMatchers.lambda$contentType$0(ContentResultMatchers.java:86)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.pbs.app.ControllerTests.testMostScannedBrands(ControllerTests.java:80)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.pbs.app.ControllerTests.testMostSharedBrands -- Time elapsed: 3.589 s <<< FAILURE!
+java.lang.AssertionError: Content type expected:<application/json> but was:<text/plain;charset=UTF-8>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.ContentResultMatchers.lambda$contentType$0(ContentResultMatchers.java:86)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.pbs.app.ControllerTests.testMostSharedBrands(ControllerTests.java:110)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.pbs.app.ControllerTests.testMostFavoritedBrands -- Time elapsed: 3.477 s <<< FAILURE!
+java.lang.AssertionError: Content type expected:<application/json> but was:<text/plain;charset=UTF-8>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.ContentResultMatchers.lambda$contentType$0(ContentResultMatchers.java:86)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.pbs.app.ControllerTests.testMostFavoritedBrands(ControllerTests.java:95)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.pbs.app.ControllerTests.testRankingOfMostShared -- Time elapsed: 5.269 s <<< FAILURE!
+java.lang.AssertionError: Content type expected:<application/json> but was:<text/plain;charset=UTF-8>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.ContentResultMatchers.lambda$contentType$0(ContentResultMatchers.java:86)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.pbs.app.ControllerTests.testRankingOfMostShared(ControllerTests.java:159)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

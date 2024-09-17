@@ -1,5 +1,7 @@
 package com.pbs.Entities;
 
+import java.util.Random;
+
 public class Product {
     String productID, name, price, barcode, currency, category, brand, commissionRate, affiliate, logoUri, webURL, affiliateWebURL, description, earningsPerClick, totalSalesVolume, imageURL, mostRecentDate;
     boolean couponsAvailable, topRated, isNew, isPriorityListing, onSale, onPromotion;
@@ -194,6 +196,10 @@ public class Product {
         if (couponsAvailable) {
             points += 1;
         }
+    }
+    public void generateProductID() {
+        Random rand = new Random();
+        productID = "P" + rand.nextInt(1000000);
     }
 
 

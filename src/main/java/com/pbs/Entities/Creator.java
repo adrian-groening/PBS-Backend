@@ -1,5 +1,7 @@
 package com.pbs.Entities;
 
+import java.util.Random;
+
 public class Creator {
     public String creatorID, firstName, surname, email, password;
     public Creator() {
@@ -42,7 +44,8 @@ public class Creator {
         this.password = password;
     }
     public void generateCreatorID() {
-        this.creatorID = "C" + this.email;
+        Random rand = new Random();
+        this.creatorID = "C" + rand.nextInt(100000);
     }
     
     
