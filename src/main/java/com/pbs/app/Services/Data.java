@@ -524,6 +524,8 @@ public class Data {
         return favorites;
     }
     
+    
+        
 
     public List<Scan> get5MostScannedProducts() throws SQLException {
         List<Scan> scanHistories = new ArrayList<>();
@@ -546,6 +548,24 @@ public class Data {
             scanHistory.setName(rs.getString("name"));
             scanHistory.setPhoto(rs.getString("photo"));
             scanHistories.add(scanHistory);
+        }
+        return scanHistories;
+    }
+    
+    public List<String> getMostScannedProductString() throws SQLException {
+        List<String> scanHistories = new ArrayList<>();
+        s = con.createStatement();
+        rs = s.executeQuery(
+            "SELECT sh.* FROM scan_history sh " +
+            "JOIN (SELECT barcode, MAX(scanID) as latestScanID, COUNT(*) AS scan_count " +
+            "      FROM scan_history " +
+            "      GROUP BY barcode " +
+            "      ORDER BY scan_count DESC " +
+            "      LIMIT 5) subquery " +
+            "ON sh.scanID = subquery.latestScanID"
+        );
+        while (rs.next()) {
+            scanHistories.add(rs.getString("name"));
         }
         return scanHistories;
     }

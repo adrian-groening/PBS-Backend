@@ -21,6 +21,7 @@ import com.pbs.Entities.Favorite;
 import com.pbs.Entities.Product;
 import com.pbs.Entities.Scan;
 import com.pbs.Entities.Share;
+import com.pbs.Entities.AnalyticsData;
 import com.pbs.app.EbaySearch.EbaySearch;
 import com.pbs.app.ImpactSearch.ImpactSearch;
 import com.pbs.app.Llama.AI;
@@ -646,6 +647,63 @@ public class Controller {
     public ResponseEntity<String> generateInstagramCaptionForProduct(@RequestBody String json) throws Exception {
         AI ai = new AI();
         return ResponseEntity.status(HttpStatus.OK).body(ai.generateInstagramCaptionForProduct(json));
+    }
+    
+    @PostMapping("/analytics")
+    public ResponseEntity<String> getAnalytics(@RequestParam(required = true, defaultValue = "none") String email) throws SQLException {
+        data.openConnection();
+        Creator creator = data.getCreator(email);
+        
+        //totalScans
+        String scanCount = String.valueOf(data.getCreatorScanCount(creator.getCreatorID()));
+        
+        //totalShares
+        String shareCount = String.valueOf(data.getCreatorShareCount(creator.getCreatorID()));
+        
+        //most scanned products
+        List<String> mostScanned = data.getMostScannedProductString();
+        
+        //most favourited products
+        List<Favorite> mostFavoritedList = data.get5MostFavoritedProducts();
+        List<String> mostFavoritedProductList = new ArrayList();
+
+
+        for (Favorite favorite : mostFavoritedList) {
+            Product fav = data.getProduct(favorite.getProductID());
+            mostFavoritedProductList.add(fav.getName());
+        }
+
+         //List<Share> mostSharedList = data.get5MostSharedProducts();
+        
+        //most scanned brands
+        List<String> mostScannedBrands = data.get5MostScannedBrands();
+        
+        //most favourited brands
+        List<String> mostFavoritedBrands = data.get5MostFavoritedBrands();
+        
+        //most shared brands
+        List<String> mostSharedBrands = data.get5MostSharedBrands();
+        
+        //most scanned categories
+        List<String> mostScannedCategories = data.get5MostScannedCategories();
+        
+        //most favourited categories
+        List<String> mostFavoritedCategories = data.get5MostFavoritedCategories();
+        
+        //most shared categories
+        List<String> mostSharedCategories = data.get5MostSharedCategories();
+        
+        
+        AnalyticsData analytics = new AnalyticsData(scanCount, shareCount, mostScanned, mostFavoritedProductList, mostScannedBrands, mostFavoritedBrands, mostSharedBrands, mostScannedCategories,mostFavoritedCategories, mostSharedCategories);
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(analytics);
+        
+        
+        data.closeConnection(); 
+         
+         
+        return ResponseEntity.status(HttpStatus.OK).body(json);
     }
 
 

@@ -1,15 +1,16 @@
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/app/ImpactSearch/ProductResults.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/app/EbaySearch/Root.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/app/Controller.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/Entities/Creator.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/Entities/Scan.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/app/Repositories/AppProductList.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/app/Services/Data.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/Entities/Product.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/app/AppApplication.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/app/Services/AuthService.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/Entities/Favorite.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/app/ImpactSearch/ImpactSearch.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/Entities/Share.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/app/EbaySearch/EbaySearch.java
-/Users/adriangroening/Desktop/Iteration3/PBS-Backend/src/main/java/com/pbs/app/Llama/AI.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\Entities\Creator.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\app\Services\AuthService.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\Entities\Favorite.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\Entities\Share.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\app\Controller.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\Entities\Scan.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\app\Llama\AI.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\app\ImpactSearch\ImpactSearch.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\app\EbaySearch\EbaySearch.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\app\ImpactSearch\ProductResults.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\app\Services\Data.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\app\AppApplication.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\Entities\Product.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\Entities\AnalyticsData.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\app\EbaySearch\Root.java
+C:\Users\Alienware 15\Documents\Impact Project\Backend\PBS-Backend\PBS-Backend-main\src\main\java\com\pbs\app\Repositories\AppProductList.java
