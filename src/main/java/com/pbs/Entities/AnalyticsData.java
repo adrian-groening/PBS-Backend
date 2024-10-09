@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class AnalyticsData {
     String totalScans, totalShares;
-    List<String> scannedProducts, favourateProducts, scannedBrands, favouriteBrands, sharedBrands, scannedCategories,favourateCategories, sharedCategories;
+    List<String> scannedProducts, favourateProducts, sharedProducts, scannedBrands, favouriteBrands, sharedBrands, scannedCategories,favourateCategories, sharedCategories;
    
 
 
@@ -19,13 +19,14 @@ public class AnalyticsData {
     }
    
    //Constructor 
-   public AnalyticsData( String totalScans, String totalShares, List<String> scannedProducts, List<String> favourateProducts, List<String> scannedBrands, List<String> favouriteBrands, 
+   public AnalyticsData( String totalScans, String totalShares, List<String> scannedProducts, List<String> favourateProducts, List<String> sharedProducts, List<String> scannedBrands, List<String> favouriteBrands, 
     List<String> sharedBrands, List<String> scannedCategories, List<String> favourateCategories, List<String> sharedCategories)
     {
       this.totalScans =totalScans;
       this.totalShares = totalShares;
       this.scannedProducts = scannedProducts;
       this.favourateProducts = favourateProducts;
+      this.sharedProducts = sharedProducts;
       this.scannedBrands = scannedBrands;
       this.favouriteBrands = favouriteBrands;
       this.sharedBrands = sharedBrands;
@@ -74,6 +75,16 @@ public class AnalyticsData {
 
     public void setFavourateProducts(List<String> favourateProducts) {
         this.favourateProducts = favourateProducts;
+    }
+    
+    
+    //sharedProducts
+    public List<String> getSharedProducts() {
+        return sharedProducts;
+    }
+
+    public void setSharedProducts(List<String> sharedProducts) {
+        this.sharedProducts = sharedProducts;
     }
 
 

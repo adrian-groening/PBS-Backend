@@ -672,8 +672,16 @@ public class Controller {
             Product fav = data.getProduct(favorite.getProductID());
             mostFavoritedProductList.add(fav.getName());
         }
+        
+        //most shared products
+        List<Share> mostSharedList = data.get5MostSharedProducts();
 
-         //List<Share> mostSharedList = data.get5MostSharedProducts();
+        List<String> mostSharedProductList = new ArrayList();
+
+        for (Share share : mostSharedList) {
+            Product fav = data.getProduct(share.getProductID());
+            mostSharedProductList.add(fav.getName());
+        }
         
         //most scanned brands
         List<String> mostScannedBrands = data.get5MostScannedBrands();
@@ -694,7 +702,7 @@ public class Controller {
         List<String> mostSharedCategories = data.get5MostSharedCategories();
         
         
-        AnalyticsData analytics = new AnalyticsData(scanCount, shareCount, mostScanned, mostFavoritedProductList, mostScannedBrands, mostFavoritedBrands, mostSharedBrands, mostScannedCategories,mostFavoritedCategories, mostSharedCategories);
+        AnalyticsData analytics = new AnalyticsData(scanCount, shareCount, mostScanned, mostFavoritedProductList, mostSharedProductList, mostScannedBrands, mostFavoritedBrands, mostSharedBrands, mostScannedCategories,mostFavoritedCategories, mostSharedCategories);
         
         Gson gson = new Gson();
         String json = gson.toJson(analytics);
