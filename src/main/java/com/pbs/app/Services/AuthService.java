@@ -4,15 +4,20 @@ import java.sql.SQLException;
 
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 
-import com.pbs.Entities.Creator;
+import com.pbs.app.Entities.Creator;
 
 public class AuthService {
-    SCryptPasswordEncoder scryptEncoder;
+    public SCryptPasswordEncoder scryptEncoder;
     Data data;
 
     public AuthService() {  
         scryptEncoder = new SCryptPasswordEncoder(16384, 8, 4, 32, 64); 
         data = new Data();
+    }
+
+    public AuthService(Data data) {  
+        scryptEncoder = new SCryptPasswordEncoder(16384, 8, 4, 32, 64); 
+        this.data = data;
     }
 
     public String encode(String text) {

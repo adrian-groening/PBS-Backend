@@ -16,7 +16,7 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.pbs.Entities.Product;
+import com.pbs.app.Entities.Product;
 
 
 

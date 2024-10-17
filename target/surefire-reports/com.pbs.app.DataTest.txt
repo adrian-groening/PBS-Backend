@@ -1,0 +1,16 @@
+-------------------------------------------------------------------------------
+Test set: com.pbs.app.DataTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.862 s <<< FAILURE! -- in com.pbs.app.DataTest
+com.pbs.app.DataTest.testGetCreator -- Time elapsed: 0.006 s <<< ERROR!
+java.lang.Error: 
+Unresolved compilation problems: 
+	The method assertEquals(String, String) is undefined for the type DataTest
+	The method assertEquals(String, String) is undefined for the type DataTest
+	The method assertEquals(String, String) is undefined for the type DataTest
+
+	at com.pbs.app.DataTest.testGetCreator(DataTest.java:63)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

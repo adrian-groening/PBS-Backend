@@ -10,24 +10,43 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.pbs.app.Entities.CreatorAttributes;
 
 
 
 public class AI {
 
-    
-
     public AI() {
         
     }
 
-    public String generateInstagramCaptionForProduct(String json) throws Exception {
-        return Post("Generate an instagram caption for the following json of products; Only include the output: " +json);
+    public String generateInstagramCaptionForProduct(String json, CreatorAttributes creatorAttributes) throws Exception {
+        Gson gson = new Gson();
+        String creatorAttributesJson = gson.toJson(creatorAttributes);
+        return Post("""
+                    Generate an instagram caption for the following json of products for the following creator; ONLY INCLUDE THE OUTPUT and DO NOT SPECIFT THAT IT IS THE INSTAGRAM CAPTION: Creator Profile:
+                    """ + creatorAttributesJson + "\nProduct Json: " + json );
     }
 
-    
+    public String generateTwitterCaptionForProduct(String json, CreatorAttributes creatorAttributes) throws Exception {
+        Gson gson = new Gson();
+        String creatorAttributesJson = gson.toJson(creatorAttributes);
+        return Post("""
+                    Generate a twitter caption for the following json of products for the following creator; ONLY INCLUDE THE OUTPUT and DO NOT SPECIFT THAT IT IS THE TWITTER CAPTION: Creator Profile:
+                    """ + creatorAttributesJson + "\nProduct Json: " + json );
+    }
 
+    public String generateFacebookCaptionForProduct(String json, CreatorAttributes creatorAttributes) throws Exception {
+        Gson gson = new Gson();
+        String creatorAttributesJson = gson.toJson(creatorAttributes);
+        return Post("""
+                    Generate a facebook caption for the following json of products for the following creator; ONLY INCLUDE THE OUTPUT and DO NOT SPECIFT THAT IT IS THE FACEBOOK CAPTION: Creator Profile:
+                    """ + creatorAttributesJson + "\nProduct Json: " + json );
+    }
 
+    public String generateCaptionForProductComparison(String json) throws Exception {
+        return Post("Generate a caption outlining why this product was picked as the best product; Products are evaluated based on the highest commission and lowest prices; Inlcide any other details that are good about the product; Only include the output and make it 100 characters or less: " +json);
+    }
 
     private static String escapeJson(String str) {
         return str.replace("\\", "\\\\")
@@ -85,7 +104,6 @@ public class AI {
                 logs.add(entry);
             } catch (JsonSyntaxException e) {
                 System.out.println("Error parsing log entry: " + line);
-                e.printStackTrace();
             }
         }
 
