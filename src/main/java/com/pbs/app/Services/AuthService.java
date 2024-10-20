@@ -2,21 +2,22 @@ package com.pbs.app.Services;
 
 import java.sql.SQLException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import com.pbs.app.Entities.Creator;
 
+@Service
 public class AuthService {
     public SCryptPasswordEncoder scryptEncoder;
+
+    @Autowired
     Data data;
 
-    public AuthService() {  
-        scryptEncoder = new SCryptPasswordEncoder(16384, 8, 4, 32, 64); 
-        data = new Data();
-    }
 
     public AuthService(Data data) {  
-        scryptEncoder = new SCryptPasswordEncoder(16384, 8, 4, 32, 64); 
+        scryptEncoder = new SCryptPasswordEncoder(16384, 8, 4, 32, 64);
         this.data = data;
     }
 

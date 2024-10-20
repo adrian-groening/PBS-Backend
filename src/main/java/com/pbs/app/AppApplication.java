@@ -32,7 +32,7 @@ public class AppApplication implements CommandLineRunner {
         data.openConnection();
         
 		try {
-            ResponseEntity<String> response = controller.creatorsFavoriteCount("groeningadrian@gmail.com");
+            ResponseEntity<String> response = controller.SignIn("groeningadrian@gmail.com", "12345678");
 			System.out.println(response.getBody());
         } catch (SQLException ex) {
         }

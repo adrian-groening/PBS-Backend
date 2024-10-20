@@ -263,7 +263,7 @@ public class Controller {
         if (data.creatorEmailExists(email)) {
             response = "Email already exists";
         } else  {
-            AuthService authService = new AuthService();
+            AuthService authService = new AuthService(data);
             String pass = authService.encode(password);
 
             String creatorID = "C" + data.getCreatorCount();
@@ -290,7 +290,7 @@ public class Controller {
         String response;
         
         //open database connection
-        AuthService authService = new AuthService();
+        AuthService authService = new AuthService(data);
 
         if (authService.login(email, password)) {
             response = "Success";

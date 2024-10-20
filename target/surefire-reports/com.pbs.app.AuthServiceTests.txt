@@ -1,0 +1,23 @@
+-------------------------------------------------------------------------------
+Test set: com.pbs.app.AuthServiceTests
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 1.456 s <<< FAILURE! -- in com.pbs.app.AuthServiceTests
+com.pbs.app.AuthServiceTests.testLoginFailureDueToNonExistentCreator -- Time elapsed: 0.009 s <<< FAILURE!
+Wanted but not invoked:
+data.closeConnection();
+-> at com.pbs.app.Services.Data.closeConnection(Data.java:58)
+
+However, there were exactly 2 interactions with this mock:
+data.openConnection();
+-> at com.pbs.app.Services.AuthService.login(AuthService.java:34)
+
+data.getCreator("nonexistent@example.com");
+-> at com.pbs.app.Services.AuthService.login(AuthService.java:35)
+
+
+	at com.pbs.app.Services.Data.closeConnection(Data.java:58)
+	at com.pbs.app.AuthServiceTests.testLoginFailureDueToNonExistentCreator(AuthServiceTests.java:112)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
