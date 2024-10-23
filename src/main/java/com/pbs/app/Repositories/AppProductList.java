@@ -21,13 +21,15 @@ import com.pbs.app.Entities.Product;
 
 
 public class AppProductList {
-    List<Product> products;
-    Map<Product, Integer> productTally = new HashMap<>();
+    private List<Product> products;
+    private Map<Product, Integer> productTally = new HashMap<>();
 
+    // Default constructor
     public AppProductList() {
         products = new ArrayList<>();
     }
 
+    // Constructor with products
     public AppProductList(List<Product> products) {
         this.products = products;
         for (Product product : products) {
@@ -35,6 +37,7 @@ public class AppProductList {
         }
     }
 
+    // sorts by price
     public void sortByPrice() {
         Collections.sort(products, new Comparator<Product>() {
             @Override
@@ -47,6 +50,7 @@ public class AppProductList {
         }
     }
 
+    // sorts by commission
     public void sortByCommission() {        
         // Sorting in descending order by reversing the operands in the Double.compare method
         Collections.sort(products, new Comparator<Product>() {
@@ -61,6 +65,7 @@ public class AppProductList {
         }
     }
 
+    // Synthesizes points based on price and commission
     public void synthesizePoints() {
         for (int i = products.size() - 1; i >= 0; i--) {
             sortByPrice();
@@ -72,6 +77,7 @@ public class AppProductList {
         } 
     }
 
+    // sorts by value by synthesizing tallies
     public void sortByValue() {
         synthesizePoints();
         productTally = productTally.entrySet().stream()
@@ -97,6 +103,7 @@ public class AppProductList {
     }
 
 
+    // Converts the prices of products to USD
     public void convertToUSD() throws IOException, InterruptedException {
         Currencies currencies = fetchAndMapCurrencies();
     
@@ -118,6 +125,7 @@ public class AppProductList {
         }
     }
 
+    // Fetches and maps currency conversion rates
     public class Currencies {
         private Map<String, Double> data = new HashMap<>();
         public Map<String, Double> getData() {
@@ -134,11 +142,13 @@ public class AppProductList {
         }
     }
 
+    // Fetches and maps currency conversion rates
     public Currencies fetchAndMapCurrencies() throws IOException, InterruptedException {
         String API_KEY = "fca_live_T5oOr3bktIm1jUtnHzCdtdhlS9sXyAT5bHwGDY3t"; 
         String API_URL = "https://api.freecurrencyapi.com/v1/latest?apikey=" + API_KEY;
         Currencies currencies = new Currencies();
 
+        // Fetch currency rates from the API
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_URL))
@@ -146,14 +156,17 @@ public class AppProductList {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        // Check if the request was successful
         if (response.statusCode() != 200) {
             throw new RuntimeException("Failed to fetch currency rates: HTTP status code " + response.statusCode());
         }
 
+        // Parse the JSON response
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(response.body(), JsonObject.class);
         JsonElement dataElement = jsonObject.get("data");
 
+        // Check if the data element is a JSON object
         if (dataElement.isJsonObject()) {
             JsonObject dataObject = dataElement.getAsJsonObject();
             for (Map.Entry<String, JsonElement> entry : dataObject.entrySet()) {

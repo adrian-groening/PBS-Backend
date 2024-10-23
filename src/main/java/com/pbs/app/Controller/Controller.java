@@ -40,86 +40,34 @@ public class Controller {
     private Data data;
 
     @Autowired
-    public Controller(Data data) {
+    public Controller() {
         this.data = data;
     }
 
     //retrieves barcodes from ebay and impact apis
     @PostMapping("/barcode")
-    public ResponseEntity<String> barcode(@RequestBody String stringData, @RequestParam(required = false, defaultValue = "value") String sortAttribute) throws IOException, InterruptedException, SQLException {
+    public ResponseEntity<String> barcode(@RequestBody String stringData, @RequestParam(required = false, defaultValue = "value") String sortAttribute, String email) throws IOException, InterruptedException, SQLException {
 
         data.openConnection();
-
+    
+        //remove quotation marks from string
         System.out.println("Received string from frontend: " + stringData);
         String cleanBarcode = stringData.replace("\"", "");
 
-        ImpactSearch impactResults = new ImpactSearch(cleanBarcode, "barcode");
-        EbaySearch ebayResults = new EbaySearch(cleanBarcode, "barcode");
+        // Queries ebay and impact results using the barcode
+        ImpactSearch impactResults = new ImpactSearch(cleanBarcode, "barcode", email, data);
+        EbaySearch ebayResults = new EbaySearch(cleanBarcode, "barcode", email, data);
     
+        // Creates an app product list repository of products to store results
         AppProductList appProducts = new AppProductList();
+
+        System.out.println("__________________________________________");
+        System.out.println("email: " + email);
+        System.out.println("sort attribute:" + sortAttribute);
+        System.out.println("Barcode:" + cleanBarcode);
+        System.out.println("__________________________________________");
+
     
-        if (impactResults.toList() != null) {
-            appProducts.addProducts(impactResults.toList());
-        } else {
-            System.out.println("Impact API returned null or empty list");
-        }
-    
-        //adds ebay products to app product list if not null
-        if (ebayResults.toList() != null) {
-            appProducts.addProducts(ebayResults.toList());
-        } else {
-            System.out.println("Ebay API returned null or empty list");
-        }
-
-
-        //converts the prices of products to USD
-        appProducts.convertToUSD();
-
-        //sort the list of products by the specified attribute
-        switch (sortAttribute) {
-            case "price" -> appProducts.sortByPrice();
-            case "commission" -> appProducts.sortByCommission();
-            case "value" -> appProducts.sortByValue();
-            default -> {
-            }
-        }
-        
-        //converts the app product list to json string format
-        Gson gson = new Gson();
-        String json = gson.toJson(appProducts.getProducts());
-        System.out.println(json);
-
-        //dispalys pretty json in terminal
-        Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
-        JsonElement je = JsonParser.parseString(json);
-        String prettyJsonString = prettyGson.toJson(je);
-        System.out.println(prettyJsonString);
-
-        data.closeConnection();
-
-        //sends products to frontend
-        return ResponseEntity.status(HttpStatus.OK).body(json);
-    }
-
-    @PostMapping("/name")
-    public ResponseEntity<String> name(@RequestBody String stringData, @RequestParam(required = false, defaultValue = "value") String sortAttribute) throws IOException, InterruptedException, SQLException {
-
-        data.openConnection();
-
-        //remove quotation mark from string
-        System.out.println("Received string from frontend: " + stringData);
-        String name = stringData.replace("\"", "");
-
-        // Queries ebay and impact results
-        ImpactSearch impactResults = new ImpactSearch(name, "name");
-        EbaySearch ebayResults = new EbaySearch(name, "name");
-    
-        // Create an app product list of products to store results
-        AppProductList appProducts = new AppProductList();
-    
-        //System.out.println("Impact API returned " + impactResults.toList().size() + " products");
-        //System.out.println("Ebay API returned " + ebayResults.toList().size() + " products");
-
         //adds impact products to app product list if not null
         if (impactResults.toList() != null) {
             appProducts.addProducts(impactResults.toList());
@@ -134,6 +82,64 @@ public class Controller {
             System.out.println("Ebay API returned null or empty list");
         }
 
+        //converts the prices of products to USD
+        appProducts.convertToUSD();
+
+        //sort the list of products by the specified attribute
+        switch (sortAttribute) {
+            case "price" -> appProducts.sortByPrice();
+            case "commission" -> appProducts.sortByCommission();
+            case "value" -> appProducts.sortByValue();
+            default -> {
+            }
+        }
+        
+        //converts the app product list to json string format
+        Gson gson = new Gson();
+        String json = gson.toJson(appProducts.getProducts());
+        //System.out.println(json);
+
+        //dispalys pretty json in terminal
+        Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
+        JsonElement je = JsonParser.parseString(json);
+        String prettyJsonString = prettyGson.toJson(je);
+        System.out.println(prettyJsonString);
+
+        data.closeConnection();
+
+        //sends products to frontend
+        return ResponseEntity.status(HttpStatus.OK).body(json);
+    }
+
+    @PostMapping("/name")
+    public ResponseEntity<String> name(@RequestBody String stringData, @RequestParam(required = false, defaultValue = "value") String sortAttribute, String email) throws IOException, InterruptedException, SQLException {
+
+        data.openConnection();
+
+        //remove quotation marks from string
+        System.out.println("Received string from frontend: " + stringData);
+        String name = stringData.replace("\"", "");
+
+        // Queries ebay and impact results using the name
+        ImpactSearch impactResults = new ImpactSearch(name, "name", email, data);
+        EbaySearch ebayResults = new EbaySearch(name, "name", email, data);
+    
+        // Creates an app product list repository of products to store results
+        AppProductList appProducts = new AppProductList();
+    
+        //adds impact products to app product list if not null
+        if (impactResults.toList() != null) {
+            appProducts.addProducts(impactResults.toList());
+        } else {
+            System.out.println("Impact API returned null or empty list");
+        }
+    
+        //adds ebay products to app product list if not null
+        if (ebayResults.toList() != null) {
+            appProducts.addProducts(ebayResults.toList());
+        } else {
+            System.out.println("Ebay API returned null or empty list");
+        }
 
         //converts the prices of products to USD
         appProducts.convertToUSD();
@@ -150,7 +156,7 @@ public class Controller {
         //converts the app product list to json string format
         Gson gson = new Gson();
         String json = gson.toJson(appProducts.getProducts());
-        System.out.println(json);
+        //System.out.println(json);
 
         //dispalys pretty json in terminal
         Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
@@ -176,6 +182,7 @@ public class Controller {
         List<Product> products = null;
         String json;
 
+        //checks if action is add or get
         if (action.equals("add")) {
             //inserts product to database
             Product product = new Gson().fromJson(productJson, Product.class);
@@ -226,6 +233,7 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).body(json);
     }
 
+    //history
     @PostMapping("/history")
     public ResponseEntity<String> History(@RequestParam(required = true, defaultValue = "none") String email, String action, String barcode, String name, String photo) throws IOException, InterruptedException, SQLException {
         //open database connection
@@ -233,6 +241,7 @@ public class Controller {
         Creator creator = data.getCreator(email);
         List<Scan> history = null;
 
+        //checks if action is add or get
         if (action.equals("add")) {
             String todaysDate = java.time.LocalDate.now().toString();
             Random  rand = new Random();
@@ -252,6 +261,7 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).body(json);
     }
 
+    //creator  sign up
     @PostMapping("/signup")
     public ResponseEntity<String> SignUp(@RequestParam(required = true, defaultValue = "none") String email, String password, String firstName, String surname) throws IOException, InterruptedException, SQLException {
         String response;
@@ -285,6 +295,7 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    //creator sign in
     @PostMapping("/signin")
     public ResponseEntity<String> SignIn(@RequestParam(required = true, defaultValue = "none") String email, String password) throws IOException, InterruptedException, SQLException {
         String response;
@@ -301,11 +312,14 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+
+    //creator attributes
     @PostMapping("/share")
     public ResponseEntity<String> share(@RequestParam(required = true, defaultValue = "none") String email, String action, String product) throws SQLException {
         data.openConnection();
         Creator creator = data.getCreator(email);
         
+        //check if action is add or get
         if (action.equals("add")) {
             Share share = new Share();
             share.setCreatorID(creator.getCreatorID());
@@ -663,6 +677,7 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).body(ai.generateInstagramCaptionForProduct(json, creatorAttributes));
     }
 
+    //twitter caption
     @PostMapping("/generateTwitterCaptionForProduct")
     public ResponseEntity<String> generateTwitterCaptionForProduct(@RequestBody String json, String email) throws Exception {
         data.openConnection();
@@ -673,6 +688,7 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).body(ai.generateTwitterCaptionForProduct(json, creatorAttributes));
     }
 
+    //facebook caption
     @PostMapping("/generateFacebookCaptionForProduct")
     public ResponseEntity<String> generateFacebookCaptionForProduct(@RequestBody String json, String email) throws Exception {
         data.openConnection();
@@ -683,13 +699,15 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).body(ai.generateFacebookCaptionForProduct(json, creatorAttributes));
     }
 
-
+    //product comparison caption
     @PostMapping("/generateCaptionForProductComparison")
     public ResponseEntity<String> generateCaptionForProductComparison(@RequestBody String json) throws Exception {
+        System.out.println("------------------------------------------------------------------------------------\nGenerating caption for product comparison" + json);
         AI ai = new AI();
         return ResponseEntity.status(HttpStatus.OK).body(ai.generateCaptionForProductComparison(json));
     }
     
+    //analytics repo
     @PostMapping("/analytics")
     public ResponseEntity<String> getAnalytics(@RequestParam(required = true, defaultValue = "none") String email) throws SQLException {
         data.openConnection();
@@ -755,6 +773,7 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).body(json);
     }
 
+    //gets api keys
     @PostMapping("/APIKeys")
     public ResponseEntity<String> APIKeys(@RequestParam(required = true, defaultValue = "none") String email) throws SQLException {
         data.openConnection();
@@ -767,8 +786,9 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).body(json);
     }
 
+    //updates impact username
     @PostMapping("/updateImpactUsername")
-    public ResponseEntity<String> updateAPIKeys(@RequestParam(required = true, defaultValue = "none") String email, String impactUsername) throws SQLException {
+    public ResponseEntity<String> updateImpactUsername(@RequestParam(required = true, defaultValue = "none") String email, String impactUsername) throws SQLException {
         data.openConnection();
         Creator creator = data.getCreator(email);
         data.updateImpactUsername(creator.getCreatorID(), impactUsername);
@@ -776,6 +796,7 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).body("Impact Username updated");
     }
 
+    //updates impact password
     @PostMapping("/updateImpactPassword")
     public ResponseEntity<String> updateImpactPassword(@RequestParam(required = true, defaultValue = "none") String email, String impactPassword) throws SQLException {
         data.openConnection();
@@ -785,6 +806,7 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).body("Impact Password updated");
     }
 
+    //updates ebay key
     @PostMapping("/updateEbayKey")
     public ResponseEntity<String> updateEbayKey(@RequestParam(required = true, defaultValue = "none") String email, String ebayKey) throws SQLException {
         data.openConnection();
@@ -794,11 +816,12 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).body("Ebay Key updated");
     }
 
-    @PostMapping("/updateAPIKeys")
-    public ResponseEntity<String> updateAPIKeys(@RequestParam(required = true, defaultValue = "none") String email, String impactUsername, String impactPassword, String ebayKey) throws SQLException {
+    //inserts api keys
+    @PostMapping("/insertAPIKeys")
+    public ResponseEntity<String> insertAPIKeys(@RequestParam(required = true, defaultValue = "none") String email, String impactUsername, String impactPassword, String ebayKey) throws SQLException {
         data.openConnection();
         Creator creator = data.getCreator(email);
-        data.updateAPIKeys(creator.getCreatorID(), impactUsername, impactPassword, ebayKey);
+        data.insertAPIKeys(creator.getCreatorID(), impactUsername, impactPassword, ebayKey);
         data.closeConnection();
         return ResponseEntity.status(HttpStatus.OK).body("API Keys updated");
     }

@@ -3,8 +3,8 @@ package com.pbs.app.Entities;
 import java.util.Random;
 
 public class Creator {
-    public String creatorID, firstName, surname, email, password;
-    public Creator() {
+    private String creatorID, firstName, surname, email, password;
+    public  Creator() {
     }
     public Creator(String creatorID, String firstName, String surname, String email, String password) {
         this.creatorID = creatorID;

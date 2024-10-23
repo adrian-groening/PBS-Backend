@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Random;
 
 public class Favorite {
-    String favoriteID, creatorID, productID, dateOfFavorite;
+    private String favoriteID, creatorID, productID, dateOfFavorite;
     public Favorite() {
     }
     public Favorite(String favoriteID, String creatorID, String productID, String dateOfFavorite) {

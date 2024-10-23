@@ -108,11 +108,7 @@ public class Root {
         public String commission;
 
         public boolean isNew() {
-            if (condition.equals("New") || condition.equals("new") || condition.equals("New")) {
-                return true;
-            } else {
-                return false;
-            }
+            return condition.equals("New") || condition.equals("new") || condition.equals("New");
         }   
 
         public String getItemId() {
@@ -214,80 +210,47 @@ public class Root {
             if (categories != null) {
                 for (Category category : categories) {
                     String categoryId = category.getCategoryId();
-                    if (categoryId.equals("12576")) {
-                        commission = "2.5"; // Business & Industrial
-                    } else if (categoryId.equals("20081")) {
-                        commission = "3.0"; // Art & Antiques
-                    } else if (categoryId.equals("11116")) {
-                        commission = "3.0"; // Coins & Paper Money
-                    } else if (categoryId.equals("14339")) {
-                        commission = "3.0"; // Crafts
-                    } else if (categoryId.equals("237")) {
-                        commission = "3.0"; // Dolls & Bears
-                    } else if (categoryId.equals("45100")) {
-                        commission = "3.0"; // Entertainment Memorabilia
-                    } else if (categoryId.equals("1")) {
-                        commission = "3.0"; // Miscellaneous Collectibles
-                    } else if (categoryId.equals("870")) {
-                        commission = "3.0"; // Pottery, Glass
-                    } else if (categoryId.equals("64482")) {
-                        commission = "3.0"; // Sports & Leisure
-                    } else if (categoryId.equals("260")) {
-                        commission = "3.0"; // Stamps
-                    } else if (categoryId.equals("220")) {
-                        commission = "3.0"; // Toys, Hobbies, and Games
-                    } else if (categoryId.equals("625")) {
-                        commission = "2.0"; // Cameras & Photo
-                    } else if (categoryId.equals("15032")) {
-                        commission = "2.0"; // Cell Phones & Accessories
-                    } else if (categoryId.equals("293")) {
-                        commission = "2.0"; // Consumer Electronics/TV, Video & Audio
-                    } else if (categoryId.equals("1249")) {
-                        commission = "2.0"; // Video Games & Consoles
-                    } else if (categoryId.equals("58058")) {
-                        commission = "1.5"; // Computers/Tablets & Networking
-                    } else if (categoryId.equals("11450")) {
-                        commission = "4.0"; // Clothing, Shoes & Accessories
-                    } else if (categoryId.equals("26395")) {
-                        commission = "4.0"; // Health & Beauty
-                    } else if (categoryId.equals("281")) {
-                        commission = "4.0"; // Jewelry & Watches
-                    } else if (categoryId.equals("14308")) {
-                        commission = "3.0"; // Alcohol & Food
-                    } else if (categoryId.equals("2984")) {
-                        commission = "3.0"; // Baby
-                    } else if (categoryId.equals("40005")) {
-                        commission = "3.0"; // Miscellaneous Home & Garden/Appliances
-                    } else if (categoryId.equals("1281")) {
-                        commission = "3.0"; // Pet Supplies
-                    } else if (categoryId.equals("172008")) {
-                        commission = "3.0"; // Gift Cards & Coupons
-                    } else if (categoryId.equals("3252")) {
-                        commission = "3.0"; // Miscellaneous Lifestyle
-                    } else if (categoryId.equals("619")) {
-                        commission = "3.0"; // Musical Instruments
-                    } else if (categoryId.equals("888")) {
-                        commission = "3.0"; // Sports
-                    } else if (categoryId.equals("1305")) {
-                        commission = "3.0"; // Tickets & Events
-                    } else if (categoryId.equals("267")) {
-                        commission = "3.0"; // Books, Comics & Magazines
-                    } else if (categoryId.equals("11232")) {
-                        commission = "3.0"; // DVDs & Movies
-                    } else if (categoryId.equals("11233")) {
-                        commission = "3.0"; // Music
-                    } else if (categoryId.equals("9800")) {
-                        commission = "4.0"; // eBay Motors
-                    } else if (categoryId.equals("6000")) {
-                        commission = "4.0"; // US Motors
-                    } else if (categoryId.equals("131090")) {
-                        commission = "3.0"; // Vehicle Parts & Accessories
-                    } else if (categoryId.equals("10542")) {
-                        commission = "1.0"; // Real Estate
-                    } else {
-                        //commission = "default commission"; // Default commission for any unspecified categories
+                    switch (categoryId) {
+                        case "12576" -> commission = "2.5"; // Business & Industrial
+                        case "20081" -> commission = "3.0"; // Art & Antiques
+                        case "11116" -> commission = "3.0"; // Coins & Paper Money
+                        case "14339" -> commission = "3.0"; // Crafts
+                        case "237" -> commission = "3.0"; // Dolls & Bears
+                        case "45100" -> commission = "3.0"; // Entertainment Memorabilia
+                        case "1" -> commission = "3.0"; // Miscellaneous Collectibles
+                        case "870" -> commission = "3.0"; // Pottery, Glass
+                        case "64482" -> commission = "3.0"; // Sports & Leisure
+                        case "260" -> commission = "3.0"; // Stamps
+                        case "220" -> commission = "3.0"; // Toys, Hobbies, and Games
+                        case "625" -> commission = "2.0"; // Cameras & Photo
+                        case "15032" -> commission = "2.0"; // Cell Phones & Accessories
+                        case "293" -> commission = "2.0"; // Consumer Electronics/TV, Video & Audio
+                        case "1249" -> commission = "2.0"; // Video Games & Consoles
+                        case "58058" -> commission = "1.5"; // Computers/Tablets & Networking
+                        case "11450" -> commission = "4.0"; // Clothing, Shoes & Accessories
+                        case "26395" -> commission = "4.0"; // Health & Beauty
+                        case "281" -> commission = "4.0"; // Jewelry & Watches
+                        case "14308" -> commission = "3.0"; // Alcohol & Food
+                        case "2984" -> commission = "3.0"; // Baby
+                        case "40005" -> commission = "3.0"; // Miscellaneous Home & Garden/Appliances
+                        case "1281" -> commission = "3.0"; // Pet Supplies
+                        case "172008" -> commission = "3.0"; // Gift Cards & Coupons
+                        case "3252" -> commission = "3.0"; // Miscellaneous Lifestyle
+                        case "619" -> commission = "3.0"; // Musical Instruments
+                        case "888" -> commission = "3.0"; // Sports
+                        case "1305" -> commission = "3.0"; // Tickets & Events
+                        case "267" -> commission = "3.0"; // Books, Comics & Magazines
+                        case "11232" -> commission = "3.0"; // DVDs & Movies
+                        case "11233" -> commission = "3.0"; // Music
+                        case "9800" -> commission = "4.0"; // eBay Motors
+                        case "6000" -> commission = "4.0"; // US Motors
+                        case "131090" -> commission = "3.0"; // Vehicle Parts & Accessories
+                        case "10542" -> commission = "1.0"; // Real Estate
+                        default -> {
+                        }
                     }
-                    
+                    //commission = "default commission"; // Default commission for any unspecified categories
+                                        
                 }
             }
             

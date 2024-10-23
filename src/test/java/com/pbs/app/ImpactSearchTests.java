@@ -18,9 +18,12 @@ import static org.mockito.Mockito.when;
 
 import com.pbs.app.Entities.Product;
 import com.pbs.app.Search.ImpactSearch.ImpactSearch;
+import com.pbs.app.Services.Data;
 
 class ImpactSearchTests {
 
+    private Data data;
+    
     private ImpactSearch impactSearch;
     private HttpClient mockHttpClient;
     private HttpResponse<String> mockHttpResponse;
@@ -64,7 +67,7 @@ class ImpactSearchTests {
         when(mockHttpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(mockHttpResponse);
 
         // Initialize the ImpactSearch object with mocks
-        impactSearch = new ImpactSearch("123456789012", "barcode") {
+        impactSearch = new ImpactSearch("123456789012", "barcode", "", data) {
             protected HttpClient getClient() {
                 return mockHttpClient;
             }

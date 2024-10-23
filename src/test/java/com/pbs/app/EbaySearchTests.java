@@ -18,12 +18,15 @@ import static org.mockito.Mockito.when;
 
 import com.pbs.app.Entities.Product;
 import com.pbs.app.Search.EbaySearch.EbaySearch;
+import com.pbs.app.Services.Data;
 
 class EbaySearchTests {
 
     private EbaySearch ebaySearch;
     private HttpClient mockHttpClient;
     private HttpResponse<String> mockHttpResponse;
+
+    Data data;
 
     @BeforeEach
     void setUp() throws IOException, InterruptedException {
@@ -56,7 +59,7 @@ class EbaySearchTests {
         when(mockHttpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(mockHttpResponse);
 
         // Initialize the EbaySearch object with mocks
-        ebaySearch = new EbaySearch("123456789012", "barcode") {
+        ebaySearch = new EbaySearch("123456789012", "barcode", "johndoe@email.com", data) {
             protected HttpClient getClient() {
                 return mockHttpClient;
             }
@@ -83,7 +86,7 @@ class EbaySearchTests {
 
     @Test
     void testFetchProductDetailsUsingName_Success() throws IOException, InterruptedException {
-        ebaySearch = new EbaySearch("Laptop", "name") {
+        ebaySearch = new EbaySearch("Laptop", "name", "data", data) {
             protected HttpClient getClient() {
                 return mockHttpClient;
             }

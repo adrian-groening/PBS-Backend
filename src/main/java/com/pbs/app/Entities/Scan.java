@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Random;
 
 public class Scan {
-    String scanID, creatorID, productBarcode, dateOfScan, name, photo;
+    private String scanID, creatorID, productBarcode, dateOfScan, name, photo;
     public Scan() {
     }
     public Scan(String scanID, String creatorID, String productBarcode, String dateOfScan, String name, String photo) {

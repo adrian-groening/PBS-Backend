@@ -2,10 +2,8 @@ package com.pbs.app.Repositories;
 import java.util.List;
 
 public class AnalyticsData {
-    String totalScans, totalShares;
-    List<String> scannedProducts, favourateProducts, sharedProducts, scannedBrands, favouriteBrands, sharedBrands, scannedCategories,favourateCategories, sharedCategories;
-   
-
+    private String totalScans, totalShares;
+    private List<String> scannedProducts, favourateProducts, sharedProducts, scannedBrands, favouriteBrands, sharedBrands, scannedCategories,favourateCategories, sharedCategories;
 
     public AnalyticsData() {
     }
@@ -35,6 +33,7 @@ public class AnalyticsData {
         return totalScans;
     }
 
+    
     public void setTotalScans(String totalScans) {
         this.totalScans = totalScans;
     }

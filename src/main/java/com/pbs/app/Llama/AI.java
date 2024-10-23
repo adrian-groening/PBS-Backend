@@ -45,7 +45,7 @@ public class AI {
     }
 
     public String generateCaptionForProductComparison(String json) throws Exception {
-        return Post("Generate a caption outlining why this product was picked as the best product; Products are evaluated based on the highest commission and lowest prices; Inlcide any other details that are good about the product; Only include the output and make it 100 characters or less: " +json);
+        return Post("Generate a caption outlining why this product was picked as the best product; Products are evaluated based on the highest commission and lowest prices; Only include the output and make it 100 characters or less including spaces, puntuation and letters, AND MAKE IT AS SHORT AS POSSIBLE AND DO NOT INCLUDE NUMBERS: " +json);
     }
 
     private static String escapeJson(String str) {
@@ -70,7 +70,7 @@ public class AI {
         //System.out.println("Prompt: " + prompt);
 
         String url = "http://localhost:11434/api/generate";
-        String jsonPayload = "{\"model\": \"llama3\", \"prompt\":\"" + escapeJson(prompt) + "\"}";
+        String jsonPayload = "{\"model\": \"llama3.1\", \"prompt\":\"" + escapeJson(prompt) + "\"}";
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request;

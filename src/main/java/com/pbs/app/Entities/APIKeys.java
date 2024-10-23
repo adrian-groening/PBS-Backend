@@ -41,4 +41,7 @@ public class APIKeys {
     public void setEbayKey(String ebayKey) {
         this.ebayKey = ebayKey;
     }
+    public void generateAPIKeysID() {
+        this.APIKeysID = java.util.UUID.randomUUID().toString();
+    }
 }

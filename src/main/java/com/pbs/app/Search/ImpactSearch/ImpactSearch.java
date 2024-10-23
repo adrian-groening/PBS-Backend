@@ -1,77 +1,94 @@
 package com.pbs.app.Search.ImpactSearch;
 
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestBody;
-//import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.io.IOException;
-import java.io.FileWriter;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.pbs.app.Entities.APIKeys;
+import com.pbs.app.Entities.Creator;
 import com.pbs.app.Entities.Product;
-import com.pbs.app.Search.ImpactSearch.ProductResults.Offer;
-import com.pbs.app.Search.ImpactSearch.ProductResults.Program;
 import com.pbs.app.Search.ImpactSearch.ProductResults.Result;
+import com.pbs.app.Services.Data;
 
-
-//@RestController
+@Service
 public class ImpactSearch {
 
-    HttpClient client = HttpClient.newHttpClient();
-    String username = "IRjnYtzeHhaR116142yBQMg6n76dULQUn1";
-    String password = "U9zf2UncgYhJsAh.hVgf~ikoQXadBzGo";
-    String encodedCredentials = Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
-    String barcodeNumber = "";  
-    ProductResults pr = null;
-      
-    public ImpactSearch(String code, String type) {
-        HttpResponse<String> response = null;
+    private HttpClient client = HttpClient.newHttpClient();
+    private String username = null;
+    private String password = null;
+    private String encodedCredentials = Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
+    private String barcodeNumber = null;  
+    private ProductResults pr = null;
 
-        if (type.equals("barcode")) {
-            barcodeNumber = code;
-            try {
-                response = client.send(generateGtinQueryURL(barcodeNumber), HttpResponse.BodyHandlers.ofString());
-                String jsonResponse = response.body();
-                // Parse the JSON response into a Product object
-                Gson gson = new Gson();
-                pr = gson.fromJson(jsonResponse, ProductResults.class);
-    
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-                System.out.println("Error sending request to API"); 
-            }
-        } else if (type.equals("name")) {
-            try {
-                response = client.send(generateNameQueryURL(code), HttpResponse.BodyHandlers.ofString());
-                String jsonResponse = response.body();
-                // Parse the JSON response into a Product object
-                Gson gson = new Gson();
-                pr = gson.fromJson(jsonResponse, ProductResults.class);
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-                System.out.println("Error sending request to API"); 
-            }
-        } else {
-            System.out.println("Invalid search type");
-        }
+    @Autowired
+    @SuppressWarnings("unused")
+    private Data data;
 
+    public ImpactSearch() {
     }
 
+    public ImpactSearch(Data data) {
+        this.data = data;
+    }
+  
+    public ImpactSearch(String code, String type, String email, Data data) {
 
+        
+        this.data = data;
+        HttpResponse<String> response;
 
+        //fetches creators api keys for searching
+        try {
+            Creator creator = data.getCreator(email);
+            APIKeys keys = data.getAPIKeys(creator.getCreatorID());
+            username = keys.getImpactUsername();
+            password = keys.getImpactPassword();
+            encodedCredentials = Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
+
+            //checks if the search type is barcode or name
+            switch (type) {
+                case "barcode" -> {
+                    barcodeNumber = code;
+                    try {
+                        response = client.send(generateGtinQueryURL(barcodeNumber), HttpResponse.BodyHandlers.ofString());
+                        String jsonResponse = response.body();
+                        Gson gson = new Gson();
+                        pr = gson.fromJson(jsonResponse, ProductResults.class);
+                        
+                    } catch (IOException | InterruptedException e) {
+                        System.out.println("Error sending request to API");
+                    }
+                }
+                case "name" -> {
+                    try {
+                        response = client.send(generateNameQueryURL(code), HttpResponse.BodyHandlers.ofString());
+                        String jsonResponse = response.body();
+                        Gson gson = new Gson();
+                        pr = gson.fromJson(jsonResponse, ProductResults.class);
+                    } catch (IOException | InterruptedException e) {
+                        System.out.println("Error sending request to API");
+                    }
+                }
+                default -> System.out.println("Invalid search type");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error getting creator details");
+        }
+    }
+
+    //generates a request to search the Impact API by barcode
     public HttpRequest generateGtinQueryURL(String barcode) {
         HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create("https://products.api.impact.com/Mediapartners/IRjnYtzeHhaR116142yBQMg6n76dULQUn1/Marketplace/Products.json?Query=" + "Gtin=" + barcode))
@@ -80,6 +97,7 @@ public class ImpactSearch {
         return request;
     }
 
+    //generates a request to search the Impact API by name
     public HttpRequest generateNameQueryURL(String name) {
         HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create("https://products.api.impact.com/Mediapartners/IRjnYtzeHhaR116142yBQMg6n76dULQUn1/Marketplace/Products.json?Query=" + "Name=" + "%27" + name + "%27"))
@@ -88,11 +106,9 @@ public class ImpactSearch {
         return request;  
     }
 
-
-    
-
+    //returns a list of products as a string
     public String toAppProductList() {
-        List<Product> ImpactProducts = new ArrayList<Product>();
+        List<Product> ImpactProducts = new ArrayList<>();
         if (pr != null) {
             for (int i = 0; i < pr.getResults().size(); i++) {
                 Product p;
@@ -139,8 +155,9 @@ public class ImpactSearch {
         }
     }
 
+    //returns a list of of products from the Impact API
     public List<Product> toList() {
-        List<Product> ImpactProducts = new ArrayList<Product>();
+        List<Product> ImpactProducts = new ArrayList<>();
         if (pr != null) {
             for (int i = 0; i < pr.getResults().size(); i++) {
                 Product p;

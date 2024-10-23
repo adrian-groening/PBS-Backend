@@ -1,7 +1,7 @@
 package com.pbs.app.Entities;
 
 public class CreatorAttributes {
-    public String attributesID, creatorID, work, location, bio, influencerLevel, tone, techLevel, mindedness, age;
+    private String attributesID, creatorID, work, location, bio, influencerLevel, tone, techLevel, mindedness, age;
     
     public CreatorAttributes(String creatorID, String attributesID, String work, String location, String bio, String influencerLevel, String tone, String techLevel, String mindedness, String age) {
         this.creatorID = creatorID;

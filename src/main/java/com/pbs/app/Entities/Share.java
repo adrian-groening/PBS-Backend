@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Random;
 
 public class Share {
-    String shareID, creatorID, productID, dateOfShare;
+    private String shareID, creatorID, productID, dateOfShare;
     public Share() {
     }
     public Share(String shareID, String creatorID, String productID, String dateOfShare) {

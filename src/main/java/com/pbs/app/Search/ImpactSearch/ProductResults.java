@@ -7,11 +7,13 @@ import com.google.gson.annotations.SerializedName;
 public class ProductResults {
     
     @SerializedName("Results")
-    public List<Result> Results;
+    private List<Result> Results;
 
+    @SuppressWarnings("unused")
     ProductResults() {
     }
 
+    @SuppressWarnings("unused")
     ProductResults(List<Result> results) {
         Results = results;
     }
@@ -30,13 +32,18 @@ public class ProductResults {
         private String Name;
         @SerializedName("SearchUri")
         private String SearchUri;
+
+        @SuppressWarnings("unused")
         Category() {
         }
+
+        @SuppressWarnings("unused")
         Category(String path, String name, String searchUri) {
             Path = path;
             Name = name;
             SearchUri = searchUri;
         }   
+
         public String getPath() {
             return Path;
         }
@@ -57,28 +64,35 @@ public class ProductResults {
         }
     }
 
-
-
     public class Manufacturer {
         @SerializedName("Name")
         private String Name;
+
         @SerializedName("SearchUri")
         private String SearchUri;
+
+        @SuppressWarnings("unused")
         Manufacturer() {
         }
+
+        @SuppressWarnings("unused")
         Manufacturer(String name, String searchUri) {
             Name = name;
             SearchUri = searchUri;
         }
+  
         public String getName() {
             return Name;
         }
+
         public String getSearchUri() {
             return SearchUri;
         }
+
         public void setName(String name) {
             Name = name;
         }
+
         public void setSearchUri(String searchUri) {
             SearchUri = searchUri;
         }
@@ -147,11 +161,7 @@ public class ProductResults {
        
         public boolean isNew() {
             if (condition != null) {
-                if (condition.equals("New")) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return condition.equals("New");
             } else {
                 return false;
             }
@@ -345,14 +355,16 @@ public class ProductResults {
         private String searchUri;
         @SerializedName("AdvertiserId")
         private String advertiserId;
+        @SuppressWarnings("unused")
         Program() {
         }
+        @SuppressWarnings("unused")
         Program(String id, String name, String logoUri, String searchUri, String advertiserId) {
-            id = id;
-            name = name;
-            logoUri = logoUri;
-            searchUri = searchUri;
-            advertiserId = advertiserId;
+            this.id = id;
+            this.name = name;
+            this.logoUri = logoUri;
+            this.searchUri = searchUri;
+            this.advertiserId = advertiserId;
         }
         public String getId() {
             return id;

@@ -1,0 +1,6 @@
+# Created at 2024-10-23T11:39:18.938
+Java heap space
+
+# Created at 2024-10-23T11:39:48.941
+Surefire is going to kill self fork JVM. The exit has elapsed 30 seconds after System.exit(0).
+

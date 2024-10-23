@@ -25,6 +25,7 @@ import com.pbs.app.Entities.Share;
 
 @Service
 public class Data {
+
     private static final Logger LOGGER = Logger.getLogger(Data.class.getName());
 
     public Connection con;
@@ -63,6 +64,7 @@ public class Data {
         }
     }
 
+    
     public void insertCreator(Creator creator) throws SQLException {
         PreparedStatement p = con.prepareStatement("INSERT INTO Creator VALUES(?,?,?,?,?)");
         p.setString(1, creator.getCreatorID());
@@ -984,12 +986,30 @@ public class Data {
     }
 
     public void updateAPIKeys(String creatorID, String impactUsername, String impactPassword, String ebayKey) throws SQLException {
+        APIKeys apiKeys = new APIKeys();
+        apiKeys.generateAPIKeysID();
+
         PreparedStatement p = con.prepareStatement("UPDATE APIKeys SET impactUsername = ?, impactPassword = ?, ebayKey = ? WHERE creatorID = ?");
         p.setString(1, impactUsername);
         p.setString(2, impactPassword);
         p.setString(3, ebayKey);
-        p.setString(4, creatorID);
+        p.setString(4, apiKeys.getAPIKeysID());
+        p.setString(5, creatorID);
         p.executeUpdate();
+    }
+
+    public void insertAPIKeys(String creatorID, String impactUsername, String impactPassword, String ebayKey) throws SQLException {
+        APIKeys apiKeys = new APIKeys();
+        apiKeys.generateAPIKeysID();
+
+        PreparedStatement p = con.prepareStatement("INSERT INTO APIKeys VALUES(?,?,?,?,?)");
+        p.setString(4, apiKeys.getAPIKeysID());
+        p.setString(5, creatorID);
+        p.setString(1, impactUsername);
+        p.setString(2, impactPassword);
+        p.setString(3, ebayKey);
+        p.executeUpdate();
+        
     }
 
     public CreatorAttributes getCreatorAttributes(String creatorID) throws SQLException {

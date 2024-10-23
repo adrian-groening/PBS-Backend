@@ -3,8 +3,8 @@ package com.pbs.app.Entities;
 import java.util.Random;
 
 public class Product {
-    String productID, name, price, barcode, currency, category, brand, commissionRate, affiliate, logoUri, webURL, affiliateWebURL, description, earningsPerClick, totalSalesVolume, imageURL, mostRecentDate;
-    boolean couponsAvailable, topRated, isNew, isPriorityListing, onSale, onPromotion;
+    private String productID, name, price, barcode, currency, category, brand, commissionRate, affiliate, logoUri, webURL, affiliateWebURL, description, earningsPerClick, totalSalesVolume, imageURL, mostRecentDate;
+    private boolean couponsAvailable, topRated, isNew, isPriorityListing, onSale, onPromotion;
     public int points;
 
 
